@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\BrowserKit\Client as BaseClient;
 use Symfony\Component\BrowserKit\Request as BrowserKitRequest;
 use Symfony\Component\BrowserKit\Response as BrowserKitResponse;
-use Wall\Application\ContainerFactory;
+use Wall\Application\Container\ContainerFactory;
 use Wall\Http\Controller\WallController;
 use Zend\Diactoros\Request;
 

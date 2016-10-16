@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace tests\contexts;
 
+use Ramsey\Uuid\Uuid;
+use Wall\Application\Command\AddPostToWall;
+
 class WallContext extends FeatureContext
 {
     /**
@@ -18,6 +21,9 @@ class WallContext extends FeatureContext
      */
     public function iAddPostToAWall()
     {
+        $command = new AddPostToWall(Uuid::uuid4(), 'Hello world!', new \DateTime());
+
+        $this->commandBus()->handle($command);
     }
 
     /**

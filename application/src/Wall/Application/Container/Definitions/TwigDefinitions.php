@@ -2,20 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Wall\Application;
+namespace Wall\Application\Container\Definitions;
 
 use DI\Container;
-use DI\ContainerBuilder;
 
-final class ContainerFactory
+final class TwigDefinitions
 {
-    public static function create(): Container
+    public static function get()
     {
-        $builder = new ContainerBuilder();
-
-        $builder->addDefinitions([
-            'twig.template.path'           => __DIR__.'/../Http/Response/Template',
-            'twig.cache.path'              => __DIR__.'/../../../var/cache',
+        return [
+            'twig.template.path'           => __DIR__.'/../../../Http/Response/Template',
+            'twig.cache.path'              => __DIR__.'/../../../../../var/cache',
             \Twig_Loader_Filesystem::class => function (Container $container) {
                 return new \Twig_Loader_Filesystem($container->get('twig.template.path'));
             },
@@ -33,8 +30,6 @@ final class ContainerFactory
 
                 return $twig;
             },
-        ]);
-
-        return $builder->build();
+        ];
     }
 }
