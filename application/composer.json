@@ -43,6 +43,9 @@
         "symfony/browser-kit": "~3.1.5"
     },
     "scripts": {
+        "cache-clear": [
+            "rm -rf var/cache/*"
+        ],
         "static-analysis": [
             "./bin/php-cs-fixer fix --config-file=build/.php_cs",
             "./bin/phpcs --standard=./build/phpcs.xml --extensions=php src tests",
@@ -63,12 +66,14 @@
         "test": [
             "@static-analysis",
             "@unit-test",
+            "@cache-clear",
             "@integration-test",
             "@behat"
         ],
         "test-ci": [
             "@static-analysis-ci",
             "@unit-test",
+            "@cache-clear",
             "@integration-test",
             "@behat"
         ]

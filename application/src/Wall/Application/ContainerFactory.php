@@ -20,12 +20,18 @@ final class ContainerFactory
                 return new \Twig_Loader_Filesystem($container->get('twig.template.path'));
             },
             \Twig_Environment::class => function (Container $container) {
-                return new \Twig_Environment(
+                $twig = new \Twig_Environment(
                     $container->get(\Twig_Loader_Filesystem::class),
                     [
                         'cache' => $container->get('twig.cache.path'),
                     ]
                 );
+
+                $twig->addFunction(new \Twig_SimpleFunction('asset', function ($asset) {
+                    return sprintf('%s', ltrim($asset, '/'));
+                }));
+
+                return $twig;
             },
         ]);
 
