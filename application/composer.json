@@ -37,7 +37,9 @@
         "mayflower/php-codebrowser": "~1.1",
 
         "phpunit/phpunit": "~5.6",
-        "behat/behat": "~3.2"
+        "behat/behat": "~3.2",
+
+        "symfony/browser-kit": "~3.1.5"
     },
     "scripts": {
         "static-analysis": [
@@ -51,17 +53,22 @@
             "./bin/phpmd src,tests text ./build/phpmd.xml"
         ],
         "unit-test": [
-            "./bin/phpunit --testsuite unit "
+            "./bin/phpunit --testsuite unit"
+        ],
+        "integration-test": [
+            "./bin/phpunit --testsuite integration"
         ],
         "behat": "./bin/behat --format=progress --out=std",
         "test": [
             "@static-analysis",
             "@unit-test",
+            "@integration-test",
             "@behat"
         ],
         "test-ci": [
             "@static-analysis-ci",
             "@unit-test",
+            "@integration-test",
             "@behat"
         ]
     },
