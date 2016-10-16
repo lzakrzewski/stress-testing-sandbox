@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\BrowserKit\Client as BaseClient;
 use Symfony\Component\BrowserKit\Request as BrowserKitRequest;
 use Symfony\Component\BrowserKit\Response as BrowserKitResponse;
+use Wall\Application\ContainerFactory;
 use Wall\Http\Controller\WallController;
 use Zend\Diactoros\Request;
 
@@ -16,8 +17,10 @@ class Client extends BaseClient
 {
     protected function doRequest($request): BrowserKitResponse
     {
+        $container = ContainerFactory::create();
+
         $psr7Request  = $this->convertToPsr7Request($request);
-        $psr7Response = (new WallController())->__invoke($psr7Request);
+        $psr7Response = (new WallController($container))->__invoke($psr7Request);
 
         return $this->convertToBrowserKitResponse($psr7Response);
     }
