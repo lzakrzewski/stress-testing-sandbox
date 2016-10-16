@@ -37,6 +37,32 @@
         "phpunit/phpunit": "~5.6",
         "behat/behat": "~3.2"
     },
+    "scripts": {
+        "static-analysis": [
+            "./bin/php-cs-fixer fix --config-file=build/.php_cs",
+            "./bin/phpcs --standard=./build/phpcs.xml --extensions=php src tests",
+            "./bin/phpmd src,tests text ./build/phpmd.xml"
+        ],
+        "static-analysis-ci": [
+            "./bin/php-cs-fixer fix --dry-run --config-file=build/.php_cs",
+            "./bin/phpcs --standard=./build/phpcs.xml --extensions=php src tests",
+            "./bin/phpmd src,tests text ./build/phpmd.xml"
+        ],
+        "unit-test": [
+            "./bin/phpunit --testsuite unit "
+        ],
+        "behat": "./bin/behat --format=progress --out=std",
+        "test": [
+            "@static-analysis",
+            "@unit-test",
+            "@behat"
+        ],
+        "test-ci": [
+            "@static-analysis-ci",
+            "@unit-test",
+            "@behat"
+        ]
+    },
     "config": {
         "bin-dir": "bin"
     },

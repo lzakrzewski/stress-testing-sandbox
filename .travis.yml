@@ -8,4 +8,4 @@ before_install:
   - composer install
 
 script:
-  - bin/phpunit
+  - composer test-ci

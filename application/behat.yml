@@ -1,0 +1,7 @@
+default:
+    autoload:
+        - "%paths.base%"
+    suites:
+        default:
+            contexts:
+                - tests\contexts\WallContext:
