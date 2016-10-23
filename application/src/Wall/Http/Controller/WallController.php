@@ -7,7 +7,7 @@ namespace Wall\Http\Controller;
 use DI\Container;
 use Wall\Http\Response\HtmlResponse;
 
-final class WallController
+class WallController
 {
     /** @var Container */
     private $container;
@@ -17,7 +17,12 @@ final class WallController
         $this->container = $container;
     }
 
-    public function __invoke()
+    public function publishPostAction()
+    {
+        return new HtmlResponse('<body>Post created!</body>', 201);
+    }
+
+    public function wallAction()
     {
         return $this->render('index.html.twig');
     }

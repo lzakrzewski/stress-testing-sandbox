@@ -6,6 +6,7 @@ namespace Wall\Http\Server;
 
 use Wall\Application\Container\ContainerFactory;
 use Wall\Http\Controller\WallController;
+use Wall\Http\Routing\WallActionDispatcher;
 use Zend\Diactoros\Server;
 use Zend\Diactoros\ServerRequestFactory;
 
@@ -16,7 +17,7 @@ final class WebServer
         $container = ContainerFactory::create();
 
         $server = Server::createServerFromRequest(
-            new WallController($container),
+            new WallActionDispatcher(new WallController($container)),
             ServerRequestFactory::fromGlobals()
         );
 

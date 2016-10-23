@@ -11,6 +11,7 @@ use Symfony\Component\BrowserKit\Request as BrowserKitRequest;
 use Symfony\Component\BrowserKit\Response as BrowserKitResponse;
 use Wall\Application\Container\ContainerFactory;
 use Wall\Http\Controller\WallController;
+use Wall\Http\Routing\WallActionDispatcher;
 use Zend\Diactoros\Request;
 
 class Client extends BaseClient
@@ -20,7 +21,7 @@ class Client extends BaseClient
         $container = ContainerFactory::create();
 
         $psr7Request  = $this->convertToPsr7Request($request);
-        $psr7Response = (new WallController($container))->__invoke($psr7Request);
+        $psr7Response = (new WallActionDispatcher(new WallController($container)))->__invoke($psr7Request);
 
         return $this->convertToBrowserKitResponse($psr7Response);
     }
