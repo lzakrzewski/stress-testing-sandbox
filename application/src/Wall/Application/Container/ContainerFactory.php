@@ -6,7 +6,9 @@ namespace Wall\Application\Container;
 
 use DI\Container;
 use DI\ContainerBuilder;
+use Wall\Application\Container\Definitions\ApplicationDefinitions;
 use Wall\Application\Container\Definitions\CommandBusDefinitions;
+use Wall\Application\Container\Definitions\InfrastructureDefinition;
 use Wall\Application\Container\Definitions\TwigDefinitions;
 
 final class ContainerFactory
@@ -15,8 +17,10 @@ final class ContainerFactory
     {
         $builder = new ContainerBuilder();
 
-        $builder->addDefinitions(TwigDefinitions::get());
+        $builder->addDefinitions(ApplicationDefinitions::get());
         $builder->addDefinitions(CommandBusDefinitions::get());
+        $builder->addDefinitions(InfrastructureDefinition::get());
+        $builder->addDefinitions(TwigDefinitions::get());
 
         return $builder->build();
     }

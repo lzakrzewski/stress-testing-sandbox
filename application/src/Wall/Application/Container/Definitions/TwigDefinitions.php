@@ -6,9 +6,9 @@ namespace Wall\Application\Container\Definitions;
 
 use DI\Container;
 
-final class TwigDefinitions
+final class TwigDefinitions implements Definition
 {
-    public static function get()
+    public static function get(): array
     {
         return [
             'twig.template.path'           => __DIR__.'/../../../Http/Response/Template',

@@ -38,6 +38,7 @@
         "mayflower/php-codebrowser": "~1.1",
 
         "phpunit/phpunit": "~5.6",
+        "phpspec/phpspec": "~3.0",
         "behat/behat": "~3.2",
 
         "symfony/browser-kit": "~3.1.5"

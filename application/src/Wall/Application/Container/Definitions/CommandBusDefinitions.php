@@ -13,20 +13,12 @@ use SimpleBus\Message\CallableResolver\ServiceLocatorAwareCallableResolver;
 use SimpleBus\Message\Handler\DelegatesToMessageHandlerMiddleware;
 use SimpleBus\Message\Handler\Resolver\NameBasedMessageHandlerResolver;
 use SimpleBus\Message\Name\ClassBasedNameResolver;
-use Wall\Application\Command\AddPostToWall;
-use Wall\Application\Command\AddPostToWallHandler;
 
-final class CommandBusDefinitions
+final class CommandBusDefinitions implements Definition
 {
     public static function get(): array
     {
         return [
-            AddPostToWallHandler::class => function () {
-                return new AddPostToWallHandler();
-            },
-            'command_handlers.map' => [
-                AddPostToWall::class => AddPostToWallHandler::class,
-            ],
             NameBasedMessageHandlerResolver::class => function (Container $container) {
                 $serviceLocator = function (string $serviceId) use ($container) {
                     return $container->get($serviceId);

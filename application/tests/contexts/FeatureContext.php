@@ -8,6 +8,7 @@ use Behat\Behat\Context\Context;
 use DI\Container;
 use SimpleBus\Message\Bus\MessageBus;
 use Wall\Application\Container\ContainerFactory;
+use Wall\Model\PostRepository;
 
 abstract class FeatureContext implements Context
 {
@@ -22,5 +23,10 @@ abstract class FeatureContext implements Context
     protected function commandBus(): MessageBus
     {
         return $this->container->get(MessageBus::class);
+    }
+
+    protected function posts(): PostRepository
+    {
+        return $this->container->get(PostRepository::class);
     }
 }
