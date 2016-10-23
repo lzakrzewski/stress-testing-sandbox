@@ -26,12 +26,18 @@ class Client extends BaseClient
         return $this->convertToBrowserKitResponse($psr7Response);
     }
 
-    private function convertToPsr7Request(BrowserKitRequest $request): RequestInterface
+    private function convertToPsr7Request(BrowserKitRequest $browserKitRequest): RequestInterface
     {
-        return new Request(
-            $request->getUri(),
-            $request->getMethod()
+        $psr7Request = new Request(
+            $browserKitRequest->getUri(),
+            $browserKitRequest->getMethod()
         );
+
+        if (!empty($parameters = $browserKitRequest->getParameters())) {
+            $psr7Request->getBody()->write(http_build_query($parameters));
+        }
+
+        return $psr7Request;
     }
 
     private function convertToBrowserKitResponse(ResponseInterface $psr7Response): BrowserKitResponse

@@ -13,7 +13,7 @@ final class InfrastructureDefinition implements Definition
     public static function get(): array
     {
         return [
-            InMemoryPostRepository::class => function (Container $container) {
+            InMemoryPostRepository::class => function () {
                 return new InMemoryPostRepository();
             },
             PostRepository::class => function (Container $container) {

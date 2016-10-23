@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Wall\Model;
 
+use Assert\Assertion;
 use Ramsey\Uuid\UuidInterface;
 
 final class Post
@@ -17,8 +18,10 @@ final class Post
     /** @var \DateTime */
     private $at;
 
-    public function __construct(UuidInterface $postId, $content, \DateTime $at)
+    private function __construct(UuidInterface $postId, $content, \DateTime $at)
     {
+        Assertion::notEmpty($content, 'Content should not be blank.');
+
         $this->postId  = $postId;
         $this->content = $content;
         $this->at      = $at;

@@ -6,7 +6,6 @@ namespace tests\integration\Wall\Http\Controller;
 
 use tests\integration\IntegrationTestCase;
 
-//Todo: add post
 class WallControllerTest extends IntegrationTestCase
 {
     /** @test */
@@ -15,14 +14,24 @@ class WallControllerTest extends IntegrationTestCase
         $this->client()->request('GET', '/');
 
         $this->assertThatResponseHasStatus(200);
-        $this->assertThatResponseContains('Hello world!');
+        $this->assertThatResponseContains('Wall');
     }
 
     /** @test */
     public function it_can_publish_post()
     {
-        $this->client()->request('POST', '/');
+        $this->client()->request('POST', '/', ['content' => 'Lorem ipsum']);
 
         $this->assertThatResponseHasStatus(201);
+        $this->assertThatResponseContains('Post created!');
+    }
+
+    /** @test */
+    public function it_can_not_publish_post_with_invalid_data()
+    {
+        $this->client()->request('POST', '/');
+
+        $this->assertThatResponseHasStatus(400);
+        $this->assertThatResponseContains('Error:');
     }
 }

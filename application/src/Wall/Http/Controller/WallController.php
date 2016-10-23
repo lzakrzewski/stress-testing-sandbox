@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace Wall\Http\Controller;
 
 use DI\Container;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Ramsey\Uuid\Uuid;
+use SimpleBus\Message\Bus\MessageBus;
+use Wall\Application\Command\PublishPost;
 use Wall\Http\Response\HtmlResponse;
 
 class WallController
@@ -17,18 +22,46 @@ class WallController
         $this->container = $container;
     }
 
-    public function publishPostAction()
+    public function publishPostAction(RequestInterface $request): ResponseInterface
     {
-        return new HtmlResponse('<body>Post created!</body>', 201);
+        $postData = $this->postData($request);
+
+        try {
+            $this->container->get(MessageBus::class)->handle(
+                new PublishPost(Uuid::uuid4(), $postData['content'], new \DateTime())
+            );
+        } catch (\InvalidArgumentException $exception) {
+            return $this->render(
+                'index.html.twig',
+                [
+                    'error' => $exception->getMessage(),
+                ],
+                400
+            );
+        }
+
+        return $this->render('index.html.twig', ['success' => 'Post created!'], 201);
     }
 
-    public function wallAction()
+    public function wallAction(): ResponseInterface
     {
-        return $this->render('index.html.twig');
+        return $this->render('index.html.twig', ['posts' => []]);
     }
 
-    private function render(string $templateName): HtmlResponse
+    private function render(string $templateName, array $parameters = [], $status = 200): HtmlResponse
     {
-        return new HtmlResponse($this->container->get(\Twig_Environment::class)->render($templateName));
+        return new HtmlResponse(
+            $this->container
+                ->get(\Twig_Environment::class)
+                ->render($templateName, $parameters),
+            $status
+        );
+    }
+
+    private function postData(RequestInterface $request): array
+    {
+        parse_str((string) $request->getBody(), $postData);
+
+        return array_merge(['content' => ''], $postData);
     }
 }
