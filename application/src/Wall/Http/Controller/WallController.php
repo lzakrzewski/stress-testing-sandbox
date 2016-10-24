@@ -8,7 +8,6 @@ use DI\Container;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
-use SimpleBus\Message\Bus\MessageBus;
 use Wall\Application\Command\PublishPost;
 use Wall\Http\Response\HtmlResponse;
 
@@ -27,7 +26,7 @@ class WallController
         $postData = $this->postData($request);
 
         try {
-            $this->container->get(MessageBus::class)->handle(
+            $this->container->get('command_bus')->handle(
                 new PublishPost(Uuid::uuid4(), $postData['content'], new \DateTime())
             );
         } catch (\InvalidArgumentException $exception) {

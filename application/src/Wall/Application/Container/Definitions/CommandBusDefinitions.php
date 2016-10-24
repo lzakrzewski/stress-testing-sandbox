@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Wall\Application\Container\Definitions;
 
 use DI\Container;
-use SimpleBus\Message\Bus\MessageBus;
 use SimpleBus\Message\Bus\Middleware\FinishesHandlingMessageBeforeHandlingNext;
 use SimpleBus\Message\Bus\Middleware\MessageBusSupportingMiddleware;
 use SimpleBus\Message\CallableResolver\CallableMap;
@@ -19,7 +18,7 @@ final class CommandBusDefinitions implements Definition
     public static function get(): array
     {
         return [
-            NameBasedMessageHandlerResolver::class => function (Container $container) {
+            'command_bus.name_based.resolver' => function (Container $container) {
                 $serviceLocator = function (string $serviceId) use ($container) {
                     return $container->get($serviceId);
                 };
@@ -32,16 +31,13 @@ final class CommandBusDefinitions implements Definition
                 return new NameBasedMessageHandlerResolver(new ClassBasedNameResolver(), $commandHandlerMap);
             },
             DelegatesToMessageHandlerMiddleware::class => function (Container $container) {
-                return new DelegatesToMessageHandlerMiddleware($container->get(NameBasedMessageHandlerResolver::class));
+                return new DelegatesToMessageHandlerMiddleware($container->get('command_bus.name_based.resolver'));
             },
-            MessageBusSupportingMiddleware::class => function (Container $container) {
+            'command_bus' => function (Container $container) {
                 $commandBus = new MessageBusSupportingMiddleware([new FinishesHandlingMessageBeforeHandlingNext()]);
                 $commandBus->appendMiddleware($container->get(DelegatesToMessageHandlerMiddleware::class));
 
                 return $commandBus;
-            },
-            MessageBus::class => function (Container $container) {
-                return $container->get(MessageBusSupportingMiddleware::class);
             },
         ];
     }

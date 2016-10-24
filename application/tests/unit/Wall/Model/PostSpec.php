@@ -8,6 +8,7 @@ use PhpSpec\ObjectBehavior;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Wall\Model\Post;
+use Wall\Model\PostWasPublished;
 
 /** @mixin Post */
 class PostSpec extends ObjectBehavior
@@ -26,5 +27,16 @@ class PostSpec extends ObjectBehavior
         $this->beConstructedThrough('publish', [Uuid::uuid4(), '', new \DateTime('2017-01-01')]);
 
         $this->shouldThrow(\InvalidArgumentException::class)->duringInstantiation();
+    }
+
+    public function it_has_events()
+    {
+        $this->beConstructedThrough('publish', [Uuid::uuid4(), 'Lorem ipsum.', new \DateTime('2017-01-01')]);
+
+        $this->events()->shouldBeLike(
+            [
+                new PostWasPublished(Uuid::uuid4(), 'Lorem ipsum.', new \DateTime('2017-01-01')),
+            ]
+        );
     }
 }

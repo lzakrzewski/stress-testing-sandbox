@@ -9,6 +9,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Wall\Application\Command\PublishPost;
 use Wall\Model\Post;
+use Wall\Model\PostWasPublished;
 
 class WallContext extends FeatureContext
 {
@@ -27,6 +28,14 @@ class WallContext extends FeatureContext
         $command = new PublishPost($postId, 'Hello world!', new \DateTime());
 
         $this->commandBus()->handle($command);
+    }
+
+    /**
+     * @Then I should be notified that post was published
+     */
+    public function iShouldBeNotifiedThatPostWasPublished()
+    {
+        $this->expectEvent(PostWasPublished::class);
     }
 
     /**
