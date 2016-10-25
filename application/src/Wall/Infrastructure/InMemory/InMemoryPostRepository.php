@@ -21,7 +21,7 @@ class InMemoryPostRepository implements PostRepository
     public function get(UuidInterface $postId): Post
     {
         if (!isset($this->storage[$postId->toString()])) {
-            throw new \RuntimeException('Post with id %s does not exist.');
+            throw new \RuntimeException(sprintf('Post with id %s does not exist.', $postId->toString()));
         }
 
         return $this->storage[$postId->toString()];

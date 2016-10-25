@@ -4,35 +4,27 @@ declare(strict_types=1);
 
 namespace tests\integration;
 
+use DI\Container;
 use PHPUnit\Framework\TestCase;
+use tests\Wall\Application\Container\TestContainerBuilder;
 
 abstract class IntegrationTestCase extends TestCase
 {
-    /** @var Client */
-    private $client;
+    /** @var Container */
+    private $container;
 
     protected function setUp()
     {
-        $this->client = new Client();
+        $this->container = TestContainerBuilder::create()->build();
     }
 
     protected function tearDown()
     {
-        $this->client = null;
+        $this->container = null;
     }
 
-    protected function client(): Client
+    protected function container(): Container
     {
-        return $this->client;
-    }
-
-    protected function assertThatResponseHasStatus(int $expectedStatus)
-    {
-        $this->assertEquals($expectedStatus, $this->client()->getResponse()->getStatus());
-    }
-
-    protected function assertThatResponseContains(string $expectedString)
-    {
-        $this->assertContains($expectedString, $this->client()->getResponse()->getContent());
+        return $this->container;
     }
 }

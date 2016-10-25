@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace tests\integration\Wall\Http\Controller;
 
-use tests\integration\IntegrationTestCase;
-
-class WallControllerTest extends IntegrationTestCase
+class WallControllerTest extends ControllerTestCase
 {
     /** @test */
     public function it_can_render_wall_with_posts()

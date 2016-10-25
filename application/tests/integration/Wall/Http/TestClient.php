@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\integration;
+namespace tests\integration\Wall\Http;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -13,7 +13,7 @@ use tests\Wall\Application\Container\TestContainerBuilder;
 use Wall\Http\Routing\WallActionDispatcher;
 use Zend\Diactoros\Request;
 
-class Client extends BaseClient
+class TestClient extends BaseClient
 {
     protected function doRequest($request): BrowserKitResponse
     {
