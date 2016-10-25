@@ -1,4 +1,9 @@
+sudo: required
+
 language: php
+
+services:
+  - docker
 
 php:
   - 7.0
