@@ -28,6 +28,8 @@ final class PublishPostHandler
 
         $this->posts->add($post);
 
-        $this->eventBus->handle($post->events()[0]);
+        array_map(function ($event) {
+            $this->eventBus->handle($event);
+        }, $post->events());
     }
 }

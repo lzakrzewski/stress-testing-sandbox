@@ -36,8 +36,11 @@ abstract class FeatureContext implements Context
     {
         $events = $this->container->get(CollectEventsMiddleware::class)->events();
 
-        Assertion::allIsInstanceOf(array_filter($events, function ($event) use ($eventClass) {
+        $instancesOfExpectedEventClass = array_filter($events, function ($event) use ($eventClass) {
             return $event instanceof $eventClass;
-        }), $eventClass);
+        });
+
+        Assertion::greaterThan(count($instancesOfExpectedEventClass), 0, sprintf('Expected at least one event of class %s', $eventClass));
+        Assertion::allIsInstanceOf($instancesOfExpectedEventClass, $eventClass);
     }
 }
