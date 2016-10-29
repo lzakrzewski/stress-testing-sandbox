@@ -8,7 +8,6 @@ use DI;
 use DI\Container;
 use Predis\Client as RedisClient;
 use Wall\Infrastructure\Cache\RedisPostRepository;
-use Wall\Infrastructure\InMemory\InMemoryPostRepository;
 use Wall\Model\PostRepository;
 
 final class InfrastructureDefinition implements Definition
@@ -26,12 +25,7 @@ final class InfrastructureDefinition implements Definition
             },
             RedisPostRepository::class => DI\object()
                 ->constructor(DI\get(RedisClient::class)),
-            InMemoryPostRepository::class => function () {
-                return new InMemoryPostRepository();
-            },
-            PostRepository::class => function (Container $container) {
-                return $container->get(InMemoryPostRepository::class);
-            },
+            PostRepository::class => DI\get(RedisPostRepository::class),
         ];
     }
 }
