@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\Wall\Infrastructure\Cache;
+namespace tests\integration\Wall\Infrastructure\Persistence\Cache;
 
 use Predis\Client as RedisClient;
 use Ramsey\Uuid\Uuid;
 use tests\integration\IntegrationTestCase;
-use Wall\Infrastructure\Cache\RedisPostRepository;
+use Wall\Infrastructure\Persistence\Cache\RedisPostRepository;
 use Wall\Model\Post;
 
 class RedisPostRepositoryTest extends IntegrationTestCase

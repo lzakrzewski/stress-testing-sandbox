@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Wall\Infrastructure\Cache;
+namespace Wall\Infrastructure\Persistence\Cache;
 
 use Predis\Client as RedisClient;
 use Ramsey\Uuid\Uuid;
