@@ -46,6 +46,8 @@
             </div>
         </div>
 
+        {{ publisherStatistics }}
+
         <div class="col-lg-offset-3 col-lg-6">
             {% if error is defined %}
                 <div class="alert alert-danger" role="alert">Error: {{ error }}</div>
@@ -67,6 +69,9 @@
                 </form>
             {% endif %}
         </div>
+
+        {{ clientStatistics }}
+
     </div>
 
     <script src="{{ asset('assets/js/jquery.js') }}"></script>
