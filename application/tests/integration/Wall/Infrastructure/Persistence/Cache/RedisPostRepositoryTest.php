@@ -9,6 +9,7 @@ use Ramsey\Uuid\Uuid;
 use tests\integration\IntegrationTestCase;
 use Wall\Infrastructure\Persistence\Cache\RedisPostRepository;
 use Wall\Model\Post;
+use Wall\Model\PostDoesNotExist;
 
 class RedisPostRepositoryTest extends IntegrationTestCase
 {
@@ -21,7 +22,7 @@ class RedisPostRepositoryTest extends IntegrationTestCase
     /** @test */
     public function it_can_get_post_from_repository_by_post_id()
     {
-        $post = Post::publish(Uuid::uuid4(), 'Lorem ipsum.', new \DateTime('2017-01-01'));
+        $post = Post::publish(Uuid::uuid4(), 'john@doe.com', 'Lorem ipsum.', new \DateTime('2017-01-01'));
 
         $this->repository->add($post);
 
@@ -31,7 +32,7 @@ class RedisPostRepositoryTest extends IntegrationTestCase
     /** @test */
     public function it_fails_when_post_does_not_exist()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(PostDoesNotExist::class);
 
         $this->repository->get(Uuid::uuid4());
     }

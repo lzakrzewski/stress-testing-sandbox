@@ -8,6 +8,7 @@ use Predis\Client as RedisClient;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Wall\Model\Post;
+use Wall\Model\PostDoesNotExist;
 use Wall\Model\PostRepository;
 
 class RedisPostRepository implements PostRepository
@@ -32,7 +33,7 @@ class RedisPostRepository implements PostRepository
         $content = $this->redis->get($postId->toString());
 
         if (empty($content)) {
-            throw new \RuntimeException(sprintf('Post with id %s does not exist.', $postId->toString()));
+            throw new PostDoesNotExist(sprintf('Post with id %s does not exist.', $postId->toString()));
         }
 
         return $this->deserialize($content);
@@ -41,9 +42,10 @@ class RedisPostRepository implements PostRepository
     private function serialize(Post $post): string
     {
         return json_encode([
-            'postId'  => $post->postId()->toString(),
-            'content' => $post->content(),
-            'at'      => $post->at()->format('Y-m-d H:i:s'),
+            'postId'    => $post->postId()->toString(),
+            'publisher' => $post->publisher(),
+            'content'   => $post->content(),
+            'at'        => $post->at()->format('Y-m-d H:i:s'),
         ]);
     }
 
@@ -51,6 +53,11 @@ class RedisPostRepository implements PostRepository
     {
         $postData = json_decode($content, true);
 
-        return Post::publish(Uuid::fromString($postData['postId']), $postData['content'], new \DateTime($postData['at']));
+        return Post::publish(
+            Uuid::fromString($postData['postId']),
+            $postData['publisher'],
+            $postData['content'],
+            new \DateTime($postData['at'])
+        );
     }
 }

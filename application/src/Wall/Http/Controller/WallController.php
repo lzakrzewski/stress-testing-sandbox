@@ -27,7 +27,7 @@ class WallController
 
         try {
             $this->container->get('command_bus')->handle(
-                new PublishPost(Uuid::uuid4(), $postData['content'], new \DateTime())
+                new PublishPost(Uuid::uuid4(), $postData['publisher'], $postData['content'], new \DateTime())
             );
         } catch (\InvalidArgumentException $exception) {
             return $this->render(
@@ -61,6 +61,6 @@ class WallController
     {
         parse_str((string) $request->getBody(), $postData);
 
-        return array_merge(['content' => ''], $postData);
+        return array_merge(['content' => '', 'publisher' => ''], $postData);
     }
 }

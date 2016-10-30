@@ -12,16 +12,20 @@ final class PostWasPublished
     private $postId;
 
     /** @var string */
+    private $publisher;
+
+    /** @var string */
     private $content;
 
     /** @var \DateTime */
     private $at;
 
-    public function __construct(UuidInterface $postId, $content, \DateTime $at)
+    public function __construct(UuidInterface $postId, string $publisher, string $content, \DateTime $at)
     {
-        $this->postId  = $postId;
-        $this->content = $content;
-        $this->at      = $at;
+        $this->postId    = $postId;
+        $this->publisher = $publisher;
+        $this->content   = $content;
+        $this->at        = $at;
     }
 
     public function postId(): UuidInterface

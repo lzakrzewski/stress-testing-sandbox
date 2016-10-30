@@ -18,7 +18,7 @@ class WallControllerTest extends ControllerTestCase
     /** @test */
     public function it_can_publish_post()
     {
-        $this->client()->request('POST', '/', ['content' => 'Lorem ipsum']);
+        $this->client()->request('POST', '/', ['publisher' => 'john@doe.com', 'content' => 'Lorem ipsum']);
 
         $this->assertThatResponseHasStatus(201);
         $this->assertThatResponseContains('Post created!');

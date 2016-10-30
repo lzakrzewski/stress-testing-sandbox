@@ -20,26 +20,38 @@ final class Post
 
     /** @var array */
     private $events = [];
+    /**
+     * @var string
+     */
+    private $publisher;
 
-    private function __construct(UuidInterface $postId, $content, \DateTime $at)
+    private function __construct(UuidInterface $postId, string $publisher, string $content, \DateTime $at)
     {
+        Assertion::notEmpty($publisher, 'Publisher should not be blank.');
+        Assertion::email($publisher, 'Email of publisher is invalid.');
         Assertion::notEmpty($content, 'Content should not be blank.');
 
-        $this->postId  = $postId;
-        $this->content = $content;
-        $this->at      = $at;
+        $this->postId    = $postId;
+        $this->content   = $content;
+        $this->at        = $at;
+        $this->publisher = $publisher;
 
-        $this->events[] = new PostWasPublished($this->postId, $this->content, $this->at);
+        $this->events[] = new PostWasPublished($this->postId, $this->publisher, $this->content, $this->at);
     }
 
-    public static function publish(UuidInterface $postId, string $content, \DateTime $at): self
+    public static function publish(UuidInterface $postId, string $publisher, string $content, \DateTime $at): self
     {
-        return new self($postId, $content, $at);
+        return new self($postId, $publisher, $content, $at);
     }
 
     public function postId(): UuidInterface
     {
         return $this->postId;
+    }
+
+    public function publisher(): string
+    {
+        return $this->publisher;
     }
 
     public function content(): string
