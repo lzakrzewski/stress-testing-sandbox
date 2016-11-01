@@ -67,7 +67,8 @@
             "./bin/phpmd src,tests text ./build/phpmd.xml"
         ],
         "unit-test": [
-            "./bin/phpunit --testsuite unit"
+            "./bin/phpunit --testsuite unit",
+            "./bin/phpspec run"
         ],
         "integration-test": [
             "./bin/phpunit --testsuite integration"
