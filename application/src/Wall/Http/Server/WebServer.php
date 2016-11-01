@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Wall\Http\Server;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Wall\Application\Container\ContainerBuilder;
 use Wall\Http\Routing\WallActionDispatcher;
 use Zend\Diactoros\Server;
-use Zend\Diactoros\ServerRequestFactory;
 
 final class WebServer
 {
@@ -17,7 +17,7 @@ final class WebServer
 
         $server = Server::createServerFromRequest(
             $container->get(WallActionDispatcher::class),
-            ServerRequestFactory::fromGlobals()
+            $container->get(ServerRequestInterface::class)
         );
 
         $server->listen();
