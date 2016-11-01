@@ -75,10 +75,8 @@ abstract class FeatureContext implements Context
 
     private function filterByClassName(array $elements, string $expectedClass)
     {
-        $filteredElements = array_filter($elements, function ($event) use ($expectedClass) {
+        return array_filter($elements, function ($event) use ($expectedClass) {
             return $event instanceof $expectedClass;
         });
-
-        return $filteredElements;
     }
 }

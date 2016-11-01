@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Wall\Application\Container\Definitions;
 
-use DI;
 use DI\Container;
 use SimpleBus\Message\Bus\Middleware\FinishesHandlingMessageBeforeHandlingNext;
 use SimpleBus\Message\Bus\Middleware\MessageBusSupportingMiddleware;
@@ -34,9 +33,12 @@ final class EventBusDefinitions implements Definition
             NotifiesMessageSubscribersMiddleware::class => function (Container $container) {
                 return new NotifiesMessageSubscribersMiddleware($container->get('event_bus.name_based.resolver'));
             },
-            'event_bus' => DI\object(MessageBusSupportingMiddleware::class)
-                ->constructor([new FinishesHandlingMessageBeforeHandlingNext()])
-                ->method('appendMiddleware', DI\get(NotifiesMessageSubscribersMiddleware::class)),
+            'event_bus' => function (Container $container) {
+                $eventBus = new MessageBusSupportingMiddleware([new FinishesHandlingMessageBeforeHandlingNext()]);
+                $eventBus->appendMiddleware($container->get(NotifiesMessageSubscribersMiddleware::class));
+
+                return $eventBus;
+            },
         ];
     }
 }

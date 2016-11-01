@@ -2,19 +2,15 @@
 
 declare(strict_types=1);
 
-namespace integration\Wall\Infrastructure\Query\Cache;
+namespace tests\integration\Wall\Infrastructure\Query\Cache;
 
-use Predis\Client as RedisClient;
-use tests\integration\IntegrationTestCase;
+use tests\integration\Wall\Infrastructure\CacheTestCase;
 use Wall\Application\Query\ClientStatisticsQuery;
 use Wall\Application\Query\Result\ClientStatistics;
-use Wall\Infrastructure\Persistence\Cache\RedisClientStatisticsQuery;
+use Wall\Infrastructure\Query\Cache\RedisClientStatisticsQuery;
 
-class RedisClientStatisticsQueryTest extends IntegrationTestCase
+class RedisClientStatisticsQueryTest extends CacheTestCase
 {
-    /** @var RedisClient */
-    private $redis;
-
     /** @var RedisClientStatisticsQuery */
     private $query;
 
@@ -30,15 +26,11 @@ class RedisClientStatisticsQueryTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->redis = $this->container()->get(RedisClient::class);
         $this->query = $this->container()->get(ClientStatisticsQuery::class);
-
-        $this->redis->flushall();
     }
 
     protected function tearDown()
     {
-        $this->redis = null;
         $this->query = null;
 
         parent::tearDown();

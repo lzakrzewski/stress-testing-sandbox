@@ -4,20 +4,16 @@ declare(strict_types=1);
 
 namespace tests\integration\Wall\Infrastructure\Persistence\Cache;
 
-use Predis\Client as RedisClient;
 use Ramsey\Uuid\Uuid;
-use tests\integration\IntegrationTestCase;
+use tests\integration\Wall\Infrastructure\CacheTestCase;
 use Wall\Infrastructure\Persistence\Cache\RedisPostRepository;
 use Wall\Model\Post;
 use Wall\Model\PostDoesNotExist;
 
-class RedisPostRepositoryTest extends IntegrationTestCase
+class RedisPostRepositoryTest extends CacheTestCase
 {
     /** @var RedisPostRepository */
     private $repository;
-
-    /** @var RedisClient */
-    private $redis;
 
     /** @test */
     public function it_can_get_post_from_repository_by_post_id()
@@ -41,15 +37,11 @@ class RedisPostRepositoryTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->redis      = $this->container()->get(RedisClient::class);
         $this->repository = $this->container()->get(RedisPostRepository::class);
-
-        $this->redis->flushall();
     }
 
     protected function tearDown()
     {
-        $this->redis      = null;
         $this->repository = null;
 
         parent::tearDown();

@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Wall\Application\Container\Definitions;
 
-use Wall\Application\Subscriber\UpdatePostProjectionWhenPostWasPublished;
+use DI;
+use Wall\Application\Query\ClientStatisticsProjector;
+use Wall\Application\Query\PublisherStatisticsProjector;
+use Wall\Application\Subscriber\UpdateClientStatisticsWhenPostWasPublished;
+use Wall\Application\Subscriber\UpdatePublisherStatisticsWhenPostWasPublished;
 use Wall\Model\PostWasPublished;
 
 final class SubscriberDefinitions implements Definition
@@ -12,12 +16,14 @@ final class SubscriberDefinitions implements Definition
     public static function get(): array
     {
         return [
-            UpdatePostProjectionWhenPostWasPublished::class => function () {
-                return new UpdatePostProjectionWhenPostWasPublished();
-            },
+            UpdatePublisherStatisticsWhenPostWasPublished::class => DI\object()
+                ->constructor(DI\get(PublisherStatisticsProjector::class)),
+            UpdateClientStatisticsWhenPostWasPublished::class => DI\object()
+                ->constructor(DI\get(ClientStatisticsProjector::class)),
             'event_subscribers.collection' => [
                 PostWasPublished::class => [
-                    UpdatePostProjectionWhenPostWasPublished::class,
+                    UpdatePublisherStatisticsWhenPostWasPublished::class,
+                    UpdateClientStatisticsWhenPostWasPublished::class,
                 ],
             ],
         ];

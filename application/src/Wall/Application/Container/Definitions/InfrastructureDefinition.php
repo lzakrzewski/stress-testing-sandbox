@@ -7,10 +7,14 @@ namespace Wall\Application\Container\Definitions;
 use DI;
 use DI\Container;
 use Predis\Client as RedisClient;
+use Wall\Application\Query\ClientStatisticsProjector;
 use Wall\Application\Query\ClientStatisticsQuery;
+use Wall\Application\Query\PublisherStatisticsProjector;
 use Wall\Application\Query\PublisherStatisticsQuery;
 use Wall\Infrastructure\Persistence\Cache\RedisPostRepository;
+use Wall\Infrastructure\Query\Cache\RedisClientStatisticsProjector;
 use Wall\Infrastructure\Query\Cache\RedisClientStatisticsQuery;
+use Wall\Infrastructure\Query\Cache\RedisPublisherStatisticsProjector;
 use Wall\Infrastructure\Query\Cache\RedisPublisherStatisticsQuery;
 use Wall\Model\PostRepository;
 
@@ -33,9 +37,16 @@ final class InfrastructureDefinition implements Definition
                 ->constructor(DI\get(RedisClient::class)),
             RedisPublisherStatisticsQuery::class => DI\object()
                 ->constructor(DI\get(RedisClient::class)),
-            PostRepository::class           => DI\get(RedisPostRepository::class),
-            ClientStatisticsQuery::class    => DI\get(RedisClientStatisticsQuery::class),
-            PublisherStatisticsQuery::class => DI\get(RedisPublisherStatisticsQuery::class),
+            PostRepository::class                    => DI\get(RedisPostRepository::class),
+            ClientStatisticsQuery::class             => DI\get(RedisClientStatisticsQuery::class),
+            PublisherStatisticsQuery::class          => DI\get(RedisPublisherStatisticsQuery::class),
+            PublisherStatisticsQuery::class          => DI\get(RedisPublisherStatisticsQuery::class),
+            RedisPublisherStatisticsProjector::class => DI\object()
+                ->constructor(DI\get(RedisClient::class)),
+            RedisClientStatisticsProjector::class => DI\object()
+                ->constructor(DI\get(RedisClient::class)),
+            PublisherStatisticsProjector::class => DI\get(RedisPublisherStatisticsProjector::class),
+            ClientStatisticsProjector::class    => DI\get(RedisClientStatisticsProjector::class),
         ];
     }
 }

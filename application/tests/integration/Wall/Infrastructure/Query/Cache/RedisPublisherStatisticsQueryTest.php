@@ -2,19 +2,18 @@
 
 declare(strict_types=1);
 
-namespace integration\Wall\Infrastructure\Query\Cache;
+namespace tests\integration\Wall\Infrastructure\Query\Cache;
 
-use Predis\Client as RedisClient;
-use tests\integration\IntegrationTestCase;
+use Ramsey\Uuid\Uuid;
+use tests\integration\Wall\Infrastructure\CacheTestCase;
+use Wall\Application\Query\PublisherStatisticsProjector;
 use Wall\Application\Query\PublisherStatisticsQuery;
 use Wall\Application\Query\Result\PublisherStatistics;
 use Wall\Infrastructure\Query\Cache\RedisPublisherStatisticsQuery;
+use Wall\Model\PostWasPublished;
 
-class RedisPublisherStatisticsQueryTest extends IntegrationTestCase
+class RedisPublisherStatisticsQueryTest extends CacheTestCase
 {
-    /** @var RedisClient */
-    private $redis;
-
     /** @var RedisPublisherStatisticsQuery */
     private $query;
 
@@ -23,24 +22,45 @@ class RedisPublisherStatisticsQueryTest extends IntegrationTestCase
     {
         $statistics = $this->query->get();
 
-        $this->assertEquals(new PublisherStatistics(0), $statistics);
+        $this->assertEquals(new PublisherStatistics(0, null), $statistics);
+    }
+
+    /** @test */
+    public function it_return_statistics()
+    {
+        $this->given(
+            new PostWasPublished(Uuid::uuid4(), 'joan@doe.com', 'Lorem ipsum.', new \DateTime()),
+            new PostWasPublished(Uuid::uuid4(), 'joan@doe.com', 'Lorem ipsum.', new \DateTime()),
+            new PostWasPublished(Uuid::uuid4(), 'john@doe.com', 'Lorem ipsum.', new \DateTime()),
+            new PostWasPublished(Uuid::uuid4(), 'joan@doe.com', 'Lorem ipsum.', new \DateTime()),
+            new PostWasPublished(Uuid::uuid4(), 'contact@lzakrzewski.com', 'Lorem ipsum.', new \DateTime()),
+            new PostWasPublished(Uuid::uuid4(), 'john@doe.com', 'Lorem ipsum.', new \DateTime()),
+            new PostWasPublished(Uuid::uuid4(), 'contact@lzakrzewski.com', 'Lorem ipsum.', new \DateTime())
+        );
+
+        $statistics = $this->query->get();
+
+        $this->assertEquals(new PublisherStatistics(7, 'joan@doe.com'), $statistics);
     }
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->redis = $this->container()->get(RedisClient::class);
         $this->query = $this->container()->get(PublisherStatisticsQuery::class);
-
-        $this->redis->flushall();
     }
 
     protected function tearDown()
     {
-        $this->redis = null;
         $this->query = null;
 
         parent::tearDown();
+    }
+
+    private function given(...$events)
+    {
+        foreach ($events as $event) {
+            $this->container()->get(PublisherStatisticsProjector::class)->applyThatPostWasPublished($event);
+        }
     }
 }

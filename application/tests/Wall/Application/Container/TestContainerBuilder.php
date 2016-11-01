@@ -6,7 +6,6 @@ namespace tests\Wall\Application\Container;
 
 use DI;
 use DI\ContainerBuilder as DIContainerBuilder;
-use SimpleBus\Message\Bus\Middleware\MessageBusSupportingMiddleware;
 use tests\Wall\Application\CommandBus\CollectEventsMiddleware;
 use Wall\Application\Container\ContainerBuilder;
 
@@ -17,11 +16,12 @@ final class TestContainerBuilder
         $builder = ContainerBuilder::create();
 
         $builder->addDefinitions([
-            CollectEventsMiddleware::class => function () {
-                return new CollectEventsMiddleware();
-            },
-            'event_bus' => DI\object(MessageBusSupportingMiddleware::class)
-                ->method('appendMiddleware', DI\get(CollectEventsMiddleware::class)),
+            CollectEventsMiddleware::class => DI\object(),
+            'event_bus'                    => DI\decorate(function ($eventBus, DI\Container $c) {
+                $eventBus->appendMiddleware($c->get(CollectEventsMiddleware::class));
+
+                return $eventBus;
+            }),
         ]);
 
         return $builder;

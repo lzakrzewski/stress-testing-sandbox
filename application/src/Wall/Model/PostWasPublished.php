@@ -33,6 +33,11 @@ final class PostWasPublished
         return $this->postId;
     }
 
+    public function publisher(): string
+    {
+        return $this->publisher;
+    }
+
     public function content(): string
     {
         return $this->content;

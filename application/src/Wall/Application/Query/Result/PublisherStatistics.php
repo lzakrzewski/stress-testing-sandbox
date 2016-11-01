@@ -9,8 +9,12 @@ final class PublisherStatistics
     /** @var int */
     public $postCount;
 
-    public function __construct(int $postCount = 0)
+    /** @var string */
+    private $mostActivePublisher;
+
+    public function __construct(int $postCount = 0, string $mostActivePublisher = null)
     {
-        $this->postCount = $postCount;
+        $this->postCount           = $postCount;
+        $this->mostActivePublisher = $mostActivePublisher;
     }
 }
