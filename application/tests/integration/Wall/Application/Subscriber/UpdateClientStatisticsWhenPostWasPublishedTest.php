@@ -14,8 +14,6 @@ class UpdateClientStatisticsWhenPostWasPublishedTest extends SubscriberTestCase
     /** @test */
     public function it_calls_projector_when_post_was_published()
     {
-        $this->markTestIncomplete();
-
         $this->handle(new PostWasPublished(Uuid::uuid4(), 'john@doe.com', 'Lorem ipsum.', new \DateTime()));
 
         $this->assertThatClientStatisticsProjectorWasCalled();
@@ -27,5 +25,6 @@ class UpdateClientStatisticsWhenPostWasPublishedTest extends SubscriberTestCase
 
         $this->assertInstanceOf(ClientStatistics::class, $statistics);
         $this->assertNotNull($statistics->mostOftenUsedBrowser);
+        $this->assertNotNull($statistics->mostOftenUsedOS);
     }
 }
