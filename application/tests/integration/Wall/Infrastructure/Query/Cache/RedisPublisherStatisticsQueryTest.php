@@ -6,7 +6,7 @@ namespace tests\integration\Wall\Infrastructure\Query\Cache;
 
 use Ramsey\Uuid\Uuid;
 use tests\integration\Wall\Infrastructure\CacheTestCase;
-use Wall\Application\Query\PublisherStatisticsProjector;
+use tests\integration\Wall\Infrastructure\Query\Cache\Dictionary\PublisherStatisticsDictionary;
 use Wall\Application\Query\PublisherStatisticsQuery;
 use Wall\Application\Query\Result\PublisherStatistics;
 use Wall\Infrastructure\Query\Cache\RedisPublisherStatisticsQuery;
@@ -14,6 +14,8 @@ use Wall\Model\PostWasPublished;
 
 class RedisPublisherStatisticsQueryTest extends CacheTestCase
 {
+    use PublisherStatisticsDictionary;
+
     /** @var RedisPublisherStatisticsQuery */
     private $query;
 
@@ -55,12 +57,5 @@ class RedisPublisherStatisticsQueryTest extends CacheTestCase
         $this->query = null;
 
         parent::tearDown();
-    }
-
-    private function given(...$events)
-    {
-        foreach ($events as $event) {
-            $this->container()->get(PublisherStatisticsProjector::class)->applyThatPostWasPublished($event);
-        }
     }
 }

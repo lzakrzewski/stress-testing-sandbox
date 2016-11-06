@@ -6,5 +6,5 @@ namespace Wall\Application\Query;
 
 interface ClientStatisticsProjector
 {
-    public function applyThatPostWasPublished();
+    public function project();
 }

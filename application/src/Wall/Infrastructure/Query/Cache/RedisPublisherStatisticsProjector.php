@@ -10,6 +10,10 @@ use Wall\Model\PostWasPublished;
 
 class RedisPublisherStatisticsProjector implements PublisherStatisticsProjector
 {
+    const PUBLISHERS_KEY        = 'publishers';
+    const POSTS_KEY             = 'posts';
+    const PUBLISHER_KEY_PATTERN = 'publisher_%s';
+
     /** @var RedisClient */
     private $redis;
 
@@ -20,23 +24,30 @@ class RedisPublisherStatisticsProjector implements PublisherStatisticsProjector
 
     public function applyThatPostWasPublished(PostWasPublished $event)
     {
-        $publisherPostsCount = $this->redis->get($this->publisherKey($event));
-
-        if (empty($publisherPostsCount)) {
-            $publisherPostsCount = 0;
-        }
+        $publisherPostsCount = $this->publisherPostCount($event);
 
         $pipeline = $this->redis->pipeline();
 
-        $pipeline->sadd('publishers', $event->publisher());
+        $pipeline->sadd(self::PUBLISHERS_KEY, $event->publisher());
         $pipeline->set($this->publisherKey($event), ++$publisherPostsCount);
-        $pipeline->sadd('posts', $event->postId()->toString());
+        $pipeline->sadd(self::POSTS_KEY, $event->postId()->toString());
 
         $pipeline->execute();
     }
 
     private function publisherKey(PostWasPublished $event): string
     {
-        return sprintf('publisher_%s', $event->publisher());
+        return sprintf(self::PUBLISHER_KEY_PATTERN, $event->publisher());
+    }
+
+    private function publisherPostCount(PostWasPublished $event): int
+    {
+        $publisherPostsCount = $this->redis->get($this->publisherKey($event));
+
+        if (null === $publisherPostsCount) {
+            return 0;
+        }
+
+        return (int) $publisherPostsCount;
     }
 }

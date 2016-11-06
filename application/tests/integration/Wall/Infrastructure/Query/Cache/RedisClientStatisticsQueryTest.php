@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace tests\integration\Wall\Infrastructure\Query\Cache;
 
-use DeviceDetector\DeviceDetector;
-use Predis\Client as RedisClient;
-use Psr\Http\Message\ServerRequestInterface;
 use tests\integration\Wall\Infrastructure\CacheTestCase;
+use tests\integration\Wall\Infrastructure\Query\Cache\Dictionary\ClientStatisticsDictionary;
 use Wall\Application\Query\ClientStatisticsQuery;
 use Wall\Application\Query\Result\ClientStatistics;
-use Wall\Infrastructure\Query\Cache\RedisClientStatisticsProjector;
 use Wall\Infrastructure\Query\Cache\RedisClientStatisticsQuery;
-use Zend\Diactoros\ServerRequest;
 
 class RedisClientStatisticsQueryTest extends CacheTestCase
 {
+    use ClientStatisticsDictionary;
+
     /** @var RedisClientStatisticsQuery */
     private $query;
 
@@ -59,24 +57,5 @@ class RedisClientStatisticsQueryTest extends CacheTestCase
         $this->query = null;
 
         parent::tearDown();
-    }
-
-    private function requestWithUserAgent(string $userAgent): ServerRequestInterface
-    {
-        return (new ServerRequest([], [], 'http://localhost/publish-post', 'POST'))
-            ->withHeader('user-agent', [$userAgent]);
-    }
-
-    private function given(...$requests)
-    {
-        foreach ($requests as $request) {
-            $projector = new RedisClientStatisticsProjector(
-                $this->container()->get(RedisClient::class),
-                $this->container()->get(DeviceDetector::class),
-                $request
-            );
-
-            $projector->applyThatPostWasPublished();
-        }
     }
 }
