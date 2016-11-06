@@ -26,6 +26,8 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "webmozart/assert": "~1.1.0",
         "predis/predis": "~1.1.1",
+        "piwik/device-detector": "3.7.3",
+        "doctrine/cache": "~1.6.1",
 
         "php-di/php-di": "~5.4",
         "twig/twig": "~1.26",
