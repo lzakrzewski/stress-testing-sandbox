@@ -7,7 +7,7 @@ namespace tests\integration\Wall\Http\Response\Template\Extension;
 use tests\integration\IntegrationTestCase;
 use Wall\Application\Query\ClientStatisticsQuery;
 use Wall\Application\Query\PublisherStatisticsQuery;
-use Wall\Application\Query\Result\ClientStatistics;
+use Wall\Application\Query\Result\ClientStatisticsResult;
 use Wall\Http\Response\Template\Extension\ClientStatisticsExtension;
 
 class ClientStatisticsExtensionTest extends IntegrationTestCase
@@ -22,7 +22,7 @@ class ClientStatisticsExtensionTest extends IntegrationTestCase
     /** @test */
     public function it_can_render_sidebar_html()
     {
-        $this->query->get()->willReturn(new ClientStatistics('Mozilla', 'Mac'));
+        $this->query->get()->willReturn(new ClientStatisticsResult('Mozilla', 'Mac'));
 
         $html = $this->extension->clientStatistics();
 

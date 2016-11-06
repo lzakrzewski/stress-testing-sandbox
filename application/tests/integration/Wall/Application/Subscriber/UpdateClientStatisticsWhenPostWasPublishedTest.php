@@ -6,7 +6,7 @@ namespace tests\integration\Wall\Application\Subscriber;
 
 use Ramsey\Uuid\Uuid;
 use Wall\Application\Query\ClientStatisticsQuery;
-use Wall\Application\Query\Result\ClientStatistics;
+use Wall\Application\Query\Result\ClientStatisticsResult;
 use Wall\Model\PostWasPublished;
 
 class UpdateClientStatisticsWhenPostWasPublishedTest extends SubscriberTestCase
@@ -23,7 +23,7 @@ class UpdateClientStatisticsWhenPostWasPublishedTest extends SubscriberTestCase
     {
         $statistics = $this->container()->get(ClientStatisticsQuery::class)->get();
 
-        $this->assertInstanceOf(ClientStatistics::class, $statistics);
+        $this->assertInstanceOf(ClientStatisticsResult::class, $statistics);
         $this->assertNotNull($statistics->mostOftenUsedBrowser);
         $this->assertNotNull($statistics->mostOftenUsedOS);
     }

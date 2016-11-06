@@ -7,7 +7,7 @@ namespace tests\integration\Wall\Infrastructure\Query\Cache;
 use tests\integration\Wall\Infrastructure\CacheTestCase;
 use tests\integration\Wall\Infrastructure\Query\Cache\Dictionary\ClientStatisticsDictionary;
 use Wall\Application\Query\ClientStatisticsQuery;
-use Wall\Application\Query\Result\ClientStatistics;
+use Wall\Application\Query\Result\ClientStatisticsResult;
 use Wall\Infrastructure\Query\Cache\RedisClientStatisticsQuery;
 
 class RedisClientStatisticsQueryTest extends CacheTestCase
@@ -22,7 +22,7 @@ class RedisClientStatisticsQueryTest extends CacheTestCase
     {
         $statistics = $this->query->get();
 
-        $this->assertEquals(new ClientStatistics(null, null), $statistics);
+        $this->assertEquals(new ClientStatisticsResult(null, null), $statistics);
     }
 
     /** @test */
@@ -42,7 +42,7 @@ class RedisClientStatisticsQueryTest extends CacheTestCase
 
         $statistics = $this->query->get();
 
-        $this->assertEquals(new ClientStatistics('Firefox', 'Windows'), $statistics);
+        $this->assertEquals(new ClientStatisticsResult('Firefox', 'Windows'), $statistics);
     }
 
     protected function setUp()

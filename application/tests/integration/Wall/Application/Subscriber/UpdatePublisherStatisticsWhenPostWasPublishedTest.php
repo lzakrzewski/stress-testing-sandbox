@@ -6,7 +6,7 @@ namespace tests\integration\Wall\Application\Subscriber;
 
 use Ramsey\Uuid\Uuid;
 use Wall\Application\Query\PublisherStatisticsQuery;
-use Wall\Application\Query\Result\PublisherStatistics;
+use Wall\Application\Query\Result\PublisherStatisticsResult;
 use Wall\Model\PostWasPublished;
 
 class UpdatePublisherStatisticsWhenPostWasPublishedTest extends SubscriberTestCase
@@ -23,7 +23,7 @@ class UpdatePublisherStatisticsWhenPostWasPublishedTest extends SubscriberTestCa
     {
         $statistics = $this->container()->get(PublisherStatisticsQuery::class)->get();
 
-        $this->assertInstanceOf(PublisherStatistics::class, $statistics);
+        $this->assertInstanceOf(PublisherStatisticsResult::class, $statistics);
         $this->assertGreaterThanOrEqual(1, $statistics->postCount);
     }
 }

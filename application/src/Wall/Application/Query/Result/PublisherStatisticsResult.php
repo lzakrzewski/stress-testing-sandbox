@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Wall\Application\Query\Result;
 
-final class PublisherStatistics
+final class PublisherStatisticsResult
 {
     /** @var int */
     public $postCount;

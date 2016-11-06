@@ -6,7 +6,7 @@ namespace Wall\Infrastructure\Query\Cache;
 
 use Predis\Client as RedisClient;
 use Wall\Application\Query\PublisherStatisticsQuery;
-use Wall\Application\Query\Result\PublisherStatistics;
+use Wall\Application\Query\Result\PublisherStatisticsResult;
 
 class RedisPublisherStatisticsQuery implements PublisherStatisticsQuery
 {
@@ -18,7 +18,7 @@ class RedisPublisherStatisticsQuery implements PublisherStatisticsQuery
         $this->redis = $redis;
     }
 
-    public function get(): PublisherStatistics
+    public function get(): PublisherStatisticsResult
     {
         $mostActivePublisher = null;
 
@@ -28,7 +28,7 @@ class RedisPublisherStatisticsQuery implements PublisherStatisticsQuery
             $mostActivePublisher = $pipeline[1][0];
         }
 
-        return new PublisherStatistics($pipeline[0], $mostActivePublisher);
+        return new PublisherStatisticsResult($pipeline[0], $mostActivePublisher);
     }
 
     private function pipeline(): array

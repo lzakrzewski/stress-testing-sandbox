@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Wall\Http\Response\Template\Extension;
 
 use Wall\Application\Query\PublisherStatisticsQuery;
-use Wall\Application\Query\Result\PublisherStatistics;
 
 class PublisherStatisticsExtension extends \Twig_Extension
 {

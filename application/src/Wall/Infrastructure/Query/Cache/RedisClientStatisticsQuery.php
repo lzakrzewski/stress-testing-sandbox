@@ -6,7 +6,7 @@ namespace Wall\Infrastructure\Query\Cache;
 
 use Predis\Client as RedisClient;
 use Wall\Application\Query\ClientStatisticsQuery;
-use Wall\Application\Query\Result\ClientStatistics;
+use Wall\Application\Query\Result\ClientStatisticsResult;
 
 class RedisClientStatisticsQuery implements ClientStatisticsQuery
 {
@@ -18,7 +18,7 @@ class RedisClientStatisticsQuery implements ClientStatisticsQuery
         $this->redis = $redis;
     }
 
-    public function get(): ClientStatistics
+    public function get(): ClientStatisticsResult
     {
         $mostOftenUsedBrowser = null;
         $mostOftenUsedOS      = null;
@@ -33,7 +33,7 @@ class RedisClientStatisticsQuery implements ClientStatisticsQuery
             $mostOftenUsedOS = $pipeline[1][0];
         }
 
-        return new ClientStatistics($mostOftenUsedBrowser, $mostOftenUsedOS);
+        return new ClientStatisticsResult($mostOftenUsedBrowser, $mostOftenUsedOS);
     }
 
     private function pipeline(): array

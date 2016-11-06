@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Wall\Application\Query\Result;
 
-final class ClientStatistics
+final class ClientStatisticsResult
 {
     /** @var string */
     public $mostOftenUsedBrowser;

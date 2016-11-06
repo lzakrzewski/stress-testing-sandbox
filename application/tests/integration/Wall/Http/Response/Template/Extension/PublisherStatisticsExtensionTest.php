@@ -6,7 +6,7 @@ namespace tests\integration\Wall\Http\Response\Template\Extension;
 
 use tests\integration\IntegrationTestCase;
 use Wall\Application\Query\PublisherStatisticsQuery;
-use Wall\Application\Query\Result\PublisherStatistics;
+use Wall\Application\Query\Result\PublisherStatisticsResult;
 use Wall\Http\Response\Template\Extension\PublisherStatisticsExtension;
 
 class PublisherStatisticsExtensionTest extends IntegrationTestCase
@@ -21,7 +21,7 @@ class PublisherStatisticsExtensionTest extends IntegrationTestCase
     /** @test */
     public function it_can_render_sidebar_html()
     {
-        $this->query->get()->willReturn(new PublisherStatistics(1234));
+        $this->query->get()->willReturn(new PublisherStatisticsResult(1234));
 
         $html = $this->extension->publisherStatistics();
 

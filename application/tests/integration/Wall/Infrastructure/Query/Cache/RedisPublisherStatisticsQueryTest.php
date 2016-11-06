@@ -8,7 +8,7 @@ use Ramsey\Uuid\Uuid;
 use tests\integration\Wall\Infrastructure\CacheTestCase;
 use tests\integration\Wall\Infrastructure\Query\Cache\Dictionary\PublisherStatisticsDictionary;
 use Wall\Application\Query\PublisherStatisticsQuery;
-use Wall\Application\Query\Result\PublisherStatistics;
+use Wall\Application\Query\Result\PublisherStatisticsResult;
 use Wall\Infrastructure\Query\Cache\RedisPublisherStatisticsQuery;
 use Wall\Model\PostWasPublished;
 
@@ -24,7 +24,7 @@ class RedisPublisherStatisticsQueryTest extends CacheTestCase
     {
         $statistics = $this->query->get();
 
-        $this->assertEquals(new PublisherStatistics(0, null), $statistics);
+        $this->assertEquals(new PublisherStatisticsResult(0, null), $statistics);
     }
 
     /** @test */
@@ -42,7 +42,7 @@ class RedisPublisherStatisticsQueryTest extends CacheTestCase
 
         $statistics = $this->query->get();
 
-        $this->assertEquals(new PublisherStatistics(7, 'joan@doe.com'), $statistics);
+        $this->assertEquals(new PublisherStatisticsResult(7, 'joan@doe.com'), $statistics);
     }
 
     protected function setUp()
