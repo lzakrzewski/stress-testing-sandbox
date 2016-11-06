@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Wall\Application\Container\Definitions;
 
-interface Definition
+interface Definitions
 {
     public static function get(): array;
 }

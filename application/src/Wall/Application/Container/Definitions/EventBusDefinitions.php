@@ -13,7 +13,7 @@ use SimpleBus\Message\Name\ClassBasedNameResolver;
 use SimpleBus\Message\Subscriber\NotifiesMessageSubscribersMiddleware;
 use SimpleBus\Message\Subscriber\Resolver\NameBasedMessageSubscriberResolver;
 
-final class EventBusDefinitions implements Definition
+final class EventBusDefinitions implements Definitions
 {
     public static function get(): array
     {

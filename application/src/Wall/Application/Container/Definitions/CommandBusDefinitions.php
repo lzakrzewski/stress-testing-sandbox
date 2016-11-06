@@ -13,7 +13,7 @@ use SimpleBus\Message\Handler\DelegatesToMessageHandlerMiddleware;
 use SimpleBus\Message\Handler\Resolver\NameBasedMessageHandlerResolver;
 use SimpleBus\Message\Name\ClassBasedNameResolver;
 
-final class CommandBusDefinitions implements Definition
+final class CommandBusDefinitions implements Definitions
 {
     public static function get(): array
     {

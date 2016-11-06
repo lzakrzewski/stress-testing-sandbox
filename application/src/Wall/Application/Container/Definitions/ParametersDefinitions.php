@@ -6,7 +6,7 @@ namespace Wall\Application\Container\Definitions;
 
 use Symfony\Component\Yaml\Yaml;
 
-final class ParametersDefinition implements Definition
+final class ParametersDefinitions implements Definitions
 {
     public static function get(): array
     {

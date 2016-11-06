@@ -11,7 +11,7 @@ use Wall\Http\Controller\WallController;
 use Wall\Http\Routing\WallActionDispatcher;
 use Zend\Diactoros\ServerRequestFactory;
 
-final class HttpDefinitions implements Definition
+final class HttpDefinitions implements Definitions
 {
     public static function get(): array
     {

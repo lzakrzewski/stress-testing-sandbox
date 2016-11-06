@@ -9,7 +9,7 @@ use Wall\Application\Command\PublishPost;
 use Wall\Application\Command\PublishPostHandler;
 use Wall\Model\PostRepository;
 
-final class CommandDefinitions implements Definition
+final class CommandDefinitions implements Definitions
 {
     public static function get(): array
     {

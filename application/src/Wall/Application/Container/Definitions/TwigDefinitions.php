@@ -10,7 +10,7 @@ use Wall\Application\Query\PublisherStatisticsQuery;
 use Wall\Http\Response\Template\Extension\ClientStatisticsExtension;
 use Wall\Http\Response\Template\Extension\PublisherStatisticsExtension;
 
-final class TwigDefinitions implements Definition
+final class TwigDefinitions implements Definitions
 {
     public static function get(): array
     {

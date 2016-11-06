@@ -11,7 +11,7 @@ use Wall\Application\Subscriber\UpdateClientStatisticsWhenPostWasPublished;
 use Wall\Application\Subscriber\UpdatePublisherStatisticsWhenPostWasPublished;
 use Wall\Model\PostWasPublished;
 
-final class SubscriberDefinitions implements Definition
+final class SubscriberDefinitions implements Definitions
 {
     public static function get(): array
     {
