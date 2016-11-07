@@ -8,10 +8,11 @@ use Predis\Client as RedisClient;
 use Wall\Application\Query\PublisherStatisticsProjector;
 use Wall\Model\PostWasPublished;
 
+//Todo: refactor this
 class RedisPublisherStatisticsProjector implements PublisherStatisticsProjector
 {
     const PUBLISHERS_KEY        = 'publishers';
-    const POSTS_KEY             = 'posts';
+    const POSTS_KEY             = '_posts';
     const PUBLISHER_KEY_PATTERN = 'publisher_%s';
 
     /** @var RedisClient */

@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Wall\Application\Container\Definitions\Infrastructure;
 
+use DeviceDetector\DeviceDetector;
 use DI;
 use DI\Container;
 use Doctrine\Common\Cache\PredisCache;
 use Predis\Client as RedisClient;
 use Wall\Application\Container\Definitions\Definitions;
 use Wall\Infrastructure\Persistence\Cache\RedisPostRepository;
-use Wall\Infrastructure\Query\Cache\RedisClientStatisticsQuery;
-use Wall\Infrastructure\Query\Cache\RedisPublisherStatisticsQuery;
 use Wall\Model\PostRepository;
 
 final class RepositoryDefinitions implements Definitions
@@ -29,11 +28,9 @@ final class RepositoryDefinitions implements Definitions
             },
             PredisCache::class => DI\object()
                 ->constructor(DI\get(RedisClient::class)),
+            DeviceDetector::class => DI\object()
+                ->method('setCache', DI\get(PredisCache::class)),
             RedisPostRepository::class => DI\object()
-                ->constructor(DI\get(RedisClient::class)),
-            RedisClientStatisticsQuery::class => DI\object()
-                ->constructor(DI\get(RedisClient::class)),
-            RedisPublisherStatisticsQuery::class => DI\object()
                 ->constructor(DI\get(RedisClient::class)),
             PostRepository::class => DI\get(RedisPostRepository::class),
         ];

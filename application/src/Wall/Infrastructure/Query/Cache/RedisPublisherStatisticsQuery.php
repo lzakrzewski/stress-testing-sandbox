@@ -35,7 +35,7 @@ class RedisPublisherStatisticsQuery implements PublisherStatisticsQuery
     {
         $pipeline = $this->redis->pipeline();
 
-        $pipeline->scard('posts');
+        $pipeline->scard('_posts');
         $pipeline->sort(
             'publishers',
             [

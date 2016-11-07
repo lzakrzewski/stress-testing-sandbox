@@ -9,6 +9,7 @@ use Wall\Application\Container\Definitions\CommandBusDefinitions;
 use Wall\Application\Container\Definitions\CommandDefinitions;
 use Wall\Application\Container\Definitions\EventBusDefinitions;
 use Wall\Application\Container\Definitions\HttpDefinitions;
+use Wall\Application\Container\Definitions\Infrastructure\ProjectorDefinitions;
 use Wall\Application\Container\Definitions\Infrastructure\QueryDefinitions;
 use Wall\Application\Container\Definitions\Infrastructure\RepositoryDefinitions;
 use Wall\Application\Container\Definitions\ParametersDefinitions;
@@ -26,6 +27,7 @@ final class ContainerBuilder
         $builder->addDefinitions(HttpDefinitions::get());
         $builder->addDefinitions(EventBusDefinitions::get());
         $builder->addDefinitions(RepositoryDefinitions::get());
+        $builder->addDefinitions(ProjectorDefinitions::get());
         $builder->addDefinitions(QueryDefinitions::get());
         $builder->addDefinitions(ParametersDefinitions::get());
         $builder->addDefinitions(SubscriberDefinitions::get());

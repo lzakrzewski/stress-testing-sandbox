@@ -20,9 +20,8 @@ final class Post
 
     /** @var array */
     private $events = [];
-    /**
-     * @var string
-     */
+
+    /** @var string */
     private $publisher;
 
     private function __construct(UuidInterface $postId, string $publisher, string $content, \DateTime $at)
