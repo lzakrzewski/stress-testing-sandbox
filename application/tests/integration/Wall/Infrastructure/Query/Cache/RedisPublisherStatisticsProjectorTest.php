@@ -6,14 +6,11 @@ namespace integration\Wall\Infrastructure\Query\Cache;
 
 use Ramsey\Uuid\Uuid;
 use tests\integration\Wall\Infrastructure\CacheTestCase;
-use tests\integration\Wall\Infrastructure\Query\Cache\Dictionary\PublisherStatisticsDictionary;
 use Wall\Infrastructure\Query\Cache\RedisPublisherStatisticsProjector;
 use Wall\Model\PostWasPublished;
 
 class RedisPublisherStatisticsProjectorTest extends CacheTestCase
 {
-    use PublisherStatisticsDictionary;
-
     /** @var RedisPublisherStatisticsProjector */
     private $projector;
 

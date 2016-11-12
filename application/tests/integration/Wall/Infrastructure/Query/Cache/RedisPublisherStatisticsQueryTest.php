@@ -6,7 +6,6 @@ namespace tests\integration\Wall\Infrastructure\Query\Cache;
 
 use Ramsey\Uuid\Uuid;
 use tests\integration\Wall\Infrastructure\CacheTestCase;
-use tests\integration\Wall\Infrastructure\Query\Cache\Dictionary\PublisherStatisticsDictionary;
 use Wall\Application\Query\PublisherStatisticsQuery;
 use Wall\Application\Query\Result\PublisherStatisticsResult;
 use Wall\Infrastructure\Query\Cache\RedisPublisherStatisticsQuery;
@@ -14,8 +13,6 @@ use Wall\Model\PostWasPublished;
 
 class RedisPublisherStatisticsQueryTest extends CacheTestCase
 {
-    use PublisherStatisticsDictionary;
-
     /** @var RedisPublisherStatisticsQuery */
     private $query;
 

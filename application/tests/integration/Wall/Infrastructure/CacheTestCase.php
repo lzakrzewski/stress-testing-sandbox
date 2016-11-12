@@ -6,6 +6,7 @@ namespace tests\integration\Wall\Infrastructure;
 
 use Assert\Assertion;
 use Predis\Client as RedisClient;
+use SimpleBus\Message\Bus\MessageBus;
 use tests\integration\IntegrationTestCase;
 use Wall\Model\PostWasPublished;
 
@@ -33,7 +34,7 @@ abstract class CacheTestCase extends IntegrationTestCase
     {
         foreach ($events as $event) {
             Assertion::isInstanceOf($event, PostWasPublished::class);
-            $this->container()->get('event_bus')->handle($event);
+            $this->eventBus()->handle($event);
         }
     }
 
@@ -57,5 +58,10 @@ abstract class CacheTestCase extends IntegrationTestCase
     private function deserialize($contents)
     {
         return json_decode($contents, true);
+    }
+
+    private function eventBus(): MessageBus
+    {
+        return $this->container()->get('event_bus');
     }
 }
