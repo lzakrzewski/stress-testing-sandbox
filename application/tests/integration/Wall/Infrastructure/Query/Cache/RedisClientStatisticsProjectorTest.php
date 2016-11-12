@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace tests\integration\Wall\Infrastructure\Query\Cache;
 
+use DeviceDetector\DeviceDetector;
+use Predis\Client as RedisClient;
 use Psr\Http\Message\ServerRequestInterface;
 use tests\integration\Wall\Infrastructure\CacheTestCase;
 use tests\integration\Wall\Infrastructure\Query\Cache\Dictionary\ClientStatisticsDictionary;
@@ -67,6 +69,19 @@ class RedisClientStatisticsProjectorTest extends CacheTestCase
         $this->assertThatCacheContainsOnKey($this->browserKey('Firefox'), 2);
         $this->assertThatCacheContainsOnKey($this->osKey('Mac'), 1);
         $this->assertThatCacheContainsOnKey($this->browserKey('Chrome'), 1);
+    }
+
+    protected function given(...$requests)
+    {
+        foreach ($requests as $request) {
+            $projector = new RedisClientStatisticsProjector(
+                $this->container()->get(RedisClient::class),
+                $this->container()->get(DeviceDetector::class),
+                $request
+            );
+
+            $projector->project();
+        }
     }
 
     private function projectWithRequest(ServerRequestInterface $request)

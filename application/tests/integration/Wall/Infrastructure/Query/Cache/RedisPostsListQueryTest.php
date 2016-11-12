@@ -8,8 +8,7 @@ use Ramsey\Uuid\Uuid;
 use tests\integration\Wall\Infrastructure\CacheTestCase;
 use Wall\Application\Query\Result\PostResult;
 use Wall\Infrastructure\Query\Cache\RedisPostsListQuery;
-use Wall\Model\Post;
-use Wall\Model\PostRepository;
+use Wall\Model\PostWasPublished;
 
 class RedisPostsListQueryTest extends CacheTestCase
 {
@@ -31,8 +30,8 @@ class RedisPostsListQueryTest extends CacheTestCase
         $postId2 = Uuid::uuid4();
 
         $this->given(
-            Post::publish($postId1, 'john@doe.com', 'Lorem ipsum1', new \DateTime('2017-01-01')),
-            Post::publish($postId2, 'joan@doe.com', 'Lorem ipsum2', new \DateTime('2016-01-01'))
+            new PostWasPublished($postId1, 'john@doe.com', 'Lorem ipsum1', new \DateTime('2017-01-01')),
+            new PostWasPublished($postId2, 'joan@doe.com', 'Lorem ipsum2', new \DateTime('2016-01-01'))
         );
 
         $postsList = $this->query->get();
@@ -53,9 +52,9 @@ class RedisPostsListQueryTest extends CacheTestCase
         $postId3 = Uuid::uuid4();
 
         $this->given(
-            Post::publish($postId3, 'contact@lzakrzewski.com', 'Lorem ipsum3', new \DateTime('2015-01-01')),
-            Post::publish($postId1, 'john@doe.com', 'Lorem ipsum1', new \DateTime('2017-01-01 00:00:01')),
-            Post::publish($postId2, 'joan@doe.com', 'Lorem ipsum2', new \DateTime('2017-01-01 00:00:00'))
+            new PostWasPublished($postId3, 'contact@lzakrzewski.com', 'Lorem ipsum3', new \DateTime('2015-01-01')),
+            new PostWasPublished($postId1, 'john@doe.com', 'Lorem ipsum1', new \DateTime('2017-01-01 00:00:01')),
+            new PostWasPublished($postId2, 'joan@doe.com', 'Lorem ipsum2', new \DateTime('2017-01-01 00:00:00'))
         );
 
         $postsList = $this->query->get();
@@ -91,26 +90,17 @@ class RedisPostsListQueryTest extends CacheTestCase
         parent::tearDown();
     }
 
-    private function given(...$posts)
-    {
-        foreach ($posts as $post) {
-            $this->container()->get(PostRepository::class)->add($post);
-        }
-    }
-
     private function givenCountOfPostsWasPublished(int $count)
     {
         for ($i = 1; $i <= $count; ++$i) {
-            $this->container()
-                ->get(PostRepository::class)
-                ->add(
-                    Post::publish(
-                        Uuid::uuid4(),
-                        sprintf('%s@%s.com', uniqid(), uniqid()),
-                        uniqid(),
-                        (new \DateTime())->modify(sprintf('-%d day', rand(1, 10000)))
-                    )
-                );
+            $this->given(
+                new PostWasPublished(
+                    Uuid::uuid4(),
+                    sprintf('%s@%s.com', uniqid(), uniqid()),
+                    uniqid(),
+                    (new \DateTime())->modify(sprintf('-%d day', rand(1, 10000)))
+                )
+            );
         }
     }
 }

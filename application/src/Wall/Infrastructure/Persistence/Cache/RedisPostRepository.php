@@ -11,6 +11,7 @@ use Wall\Model\Post;
 use Wall\Model\PostDoesNotExist;
 use Wall\Model\PostRepository;
 
+//Todo: RecordedEventDispatchingPostRepository
 class RedisPostRepository implements PostRepository
 {
     /** @var RedisClient */

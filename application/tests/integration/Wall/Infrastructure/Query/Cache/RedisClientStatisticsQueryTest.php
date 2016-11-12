@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace tests\integration\Wall\Infrastructure\Query\Cache;
 
+use DeviceDetector\DeviceDetector;
+use Predis\Client as RedisClient;
 use tests\integration\Wall\Infrastructure\CacheTestCase;
 use tests\integration\Wall\Infrastructure\Query\Cache\Dictionary\ClientStatisticsDictionary;
 use Wall\Application\Query\ClientStatisticsQuery;
 use Wall\Application\Query\Result\ClientStatisticsResult;
+use Wall\Infrastructure\Query\Cache\RedisClientStatisticsProjector;
 use Wall\Infrastructure\Query\Cache\RedisClientStatisticsQuery;
 
 class RedisClientStatisticsQueryTest extends CacheTestCase
@@ -57,5 +60,18 @@ class RedisClientStatisticsQueryTest extends CacheTestCase
         $this->query = null;
 
         parent::tearDown();
+    }
+
+    protected function given(...$requests)
+    {
+        foreach ($requests as $request) {
+            $projector = new RedisClientStatisticsProjector(
+                $this->container()->get(RedisClient::class),
+                $this->container()->get(DeviceDetector::class),
+                $request
+            );
+
+            $projector->project();
+        }
     }
 }

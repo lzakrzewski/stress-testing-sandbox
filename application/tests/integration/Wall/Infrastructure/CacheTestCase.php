@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace tests\integration\Wall\Infrastructure;
 
+use Assert\Assertion;
 use Predis\Client as RedisClient;
 use tests\integration\IntegrationTestCase;
+use Wall\Model\PostWasPublished;
 
 abstract class CacheTestCase extends IntegrationTestCase
 {
@@ -27,10 +29,11 @@ abstract class CacheTestCase extends IntegrationTestCase
         parent::tearDown();
     }
 
-    protected function assertThatCacheContains(array $expectedCacheFragment)
+    protected function given(...$events)
     {
-        foreach ($expectedCacheFragment as $key => $expectedCacheContents) {
-            $this->assertThatCacheContainsOnKey($key, $expectedCacheContents);
+        foreach ($events as $event) {
+            Assertion::isInstanceOf($event, PostWasPublished::class);
+            $this->container()->get('event_bus')->handle($event);
         }
     }
 

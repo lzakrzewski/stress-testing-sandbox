@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\Wall\Infrastructure\Query\Cache\Dictionary;
+namespace integration\Wall\Infrastructure\Query\Cache\Dictionary;
 
 use DI\Container;
 
-trait PublisherStatisticsDictionary
+trait PostsListDictionary
 {
     abstract protected function container(): Container;
 }
