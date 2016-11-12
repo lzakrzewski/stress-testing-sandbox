@@ -7,6 +7,7 @@ namespace Wall\Model;
 use Assert\Assertion;
 use Ramsey\Uuid\UuidInterface;
 
+//Todo: Encapsulate date of creation
 final class Post
 {
     /** @var UuidInterface */

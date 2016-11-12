@@ -18,8 +18,27 @@ class RedisPostsListProjector implements PostsListProjector
         $this->redis = $redis;
     }
 
-    public function applyThatPostWasPublished(PostWasPublished $postWasPublished)
+    public function applyThatPostWasPublished(PostWasPublished $event)
     {
-        // TODO: Implement applyThatPostWasPublished() method.
+        $pipeline = $this->redis->pipeline();
+
+        $pipeline->zadd('posts', $event->at()->getTimestamp(), $this->key($event))
+            ->set($this->key($event), $this->serialize($event))
+            ->execute();
+    }
+
+    private function serialize(PostWasPublished $event): string
+    {
+        return json_encode([
+            'postId'    => $event->postId()->toString(),
+            'publisher' => $event->publisher(),
+            'content'   => $event->content(),
+            'at'        => $event->at()->format('Y-m-d H:i:s'),
+        ]);
+    }
+
+    private function key(PostWasPublished $event): string
+    {
+        return sprintf('post:%s', $event->postId()->toString());
     }
 }

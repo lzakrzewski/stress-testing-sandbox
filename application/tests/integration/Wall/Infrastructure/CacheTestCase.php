@@ -48,6 +48,23 @@ abstract class CacheTestCase extends IntegrationTestCase
         $this->assertEquals($expectedMembers, $members);
     }
 
+    protected function assertThatCacheContains(string $key, array $expectedValue)
+    {
+        $contents = $this->redis->get($key);
+
+        $this->assertNotNull($contents);
+        $this->assertEquals($expectedValue, $this->deserialize($contents));
+    }
+
+    protected function assertThatCacheContainsRange(string $key, array $expectedMembers)
+    {
+        $rank = $this->redis->zrevrange($key, 0, -1, 'WITHSCORES');
+
+        $this->assertNotNull($rank);
+        $this->assertEquals($expectedMembers, $rank);
+    }
+
+    /** @deprecated  */
     protected function assertThatCacheContainsOnKey(string $key, $expectedCacheContents)
     {
         $contents = $this->redis->get($key);

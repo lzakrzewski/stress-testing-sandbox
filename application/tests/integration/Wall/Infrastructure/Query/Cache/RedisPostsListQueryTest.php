@@ -24,8 +24,6 @@ class RedisPostsListQueryTest extends CacheTestCase
     /** @test */
     public function it_returns_list_with_posts()
     {
-        $this->markTestIncomplete();
-
         $postId1 = Uuid::uuid4();
         $postId2 = Uuid::uuid4();
 
@@ -45,8 +43,6 @@ class RedisPostsListQueryTest extends CacheTestCase
     /** @test */
     public function it_returns_list_with_descending_order()
     {
-        $this->markTestIncomplete();
-
         $postId1 = Uuid::uuid4();
         $postId2 = Uuid::uuid4();
         $postId3 = Uuid::uuid4();
@@ -67,8 +63,6 @@ class RedisPostsListQueryTest extends CacheTestCase
     /** @test */
     public function it_returns_first_1000_elements_on_list()
     {
-        $this->markTestIncomplete();
-
         $this->givenCountOfPostsWasPublished(1333);
 
         $postsList = $this->query->get();
@@ -92,7 +86,7 @@ class RedisPostsListQueryTest extends CacheTestCase
 
     private function givenCountOfPostsWasPublished(int $count)
     {
-        for ($i = 1; $i <= $count; ++$i) {
+        for ($postIndex = 1; $postIndex <= $count; ++$postIndex) {
             $this->given(
                 new PostWasPublished(
                     Uuid::uuid4(),
