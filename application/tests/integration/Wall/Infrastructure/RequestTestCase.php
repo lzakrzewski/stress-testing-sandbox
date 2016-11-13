@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace tests\integration\Wall\Infrastructure;
 
-use DeviceDetector\DeviceDetector;
-use Predis\Client as RedisClient;
-use Psr\Http\Message\ServerRequestInterface;
-use Wall\Infrastructure\Query\Cache\RedisClientStatisticsProjector;
-use Zend\Diactoros\ServerRequest;
+use Ramsey\Uuid\Uuid;
+use tests\Wall\Http\TestServerRequest;
+use Wall\Model\PostWasPublished;
 
 abstract class RequestTestCase extends CacheTestCase
 {
@@ -19,20 +17,12 @@ abstract class RequestTestCase extends CacheTestCase
         }
     }
 
-    protected function projectRequestWithUserAgent($userAgent)
+    protected function projectRequestWithUserAgent(string $userAgent)
     {
-        $projector = new RedisClientStatisticsProjector(
-            $this->container()->get(RedisClient::class),
-            $this->container()->get(DeviceDetector::class),
-            $this->requestWithUserAgent($userAgent)
-        );
+        TestServerRequest::mockUserAgent($userAgent);
 
-        $projector->project();
-    }
+        $this->handle(new PostWasPublished(Uuid::uuid4(), 'john@doe.com', 'Lorem ipsum.', new \DateTime()));
 
-    private function requestWithUserAgent(string $userAgent): ServerRequestInterface
-    {
-        return (new ServerRequest([], [], 'http://localhost/publish-post', 'POST'))
-            ->withHeader('user-agent', [$userAgent]);
+        TestServerRequest::resetMockedUserAgent();
     }
 }
