@@ -35,15 +35,8 @@ class RedisPublisherStatisticsQuery implements PublisherStatisticsQuery
     {
         $pipeline = $this->redis->pipeline();
 
-        $pipeline->scard('_posts');
-        $pipeline->sort(
-            'publishers',
-            [
-                'by'    => 'publisher_*',
-                'limit' => [0, 1],
-                'sort'  => 'desc',
-            ]
-        );
+        $pipeline->zcount(RedisPostsListProjector::POSTS_KEY, '-inf', '+inf')
+            ->zrevrange(RedisPublisherStatisticsProjector::PUBLISHERS_KEY, 0, 1);
 
         return $pipeline->execute();
     }

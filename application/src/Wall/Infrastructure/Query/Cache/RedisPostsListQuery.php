@@ -25,7 +25,7 @@ class RedisPostsListQuery implements PostsListQuery
     {
         $pipeline = $this->redis->pipeline();
 
-        foreach ($this->redis->zrevrange('posts', 0, self::RESULT_LIMIT - 1) as $key) {
+        foreach ($this->redis->zrevrange(RedisPostsListProjector::POSTS_KEY, 0, self::RESULT_LIMIT - 1) as $key) {
             $pipeline->get($key);
         }
 

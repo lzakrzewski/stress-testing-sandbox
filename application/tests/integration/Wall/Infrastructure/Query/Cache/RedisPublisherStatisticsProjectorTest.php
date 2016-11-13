@@ -17,46 +17,33 @@ class RedisPublisherStatisticsProjectorTest extends CacheTestCase
     /** @test */
     public function it_applies_that_post_was_published()
     {
-        $postId = Uuid::uuid4();
-
         $this->projector->applyThatPostWasPublished(
-            new PostWasPublished($postId, 'john@doe.com', 'Lorem ipsum.', new \DateTime('2017-01-01'))
+            new PostWasPublished(Uuid::uuid4(), 'john@doe.com', 'Lorem ipsum.', new \DateTime('2017-01-01'))
         );
 
-        $this->assertThatCacheContainsSetOnKey(RedisPublisherStatisticsProjector::PUBLISHERS_KEY, ['john@doe.com']);
-        $this->assertThatCacheContainsOnKey($this->publisherKey('john@doe.com'), 1);
-        $this->assertThatCacheContainsSetOnKey(RedisPublisherStatisticsProjector::POSTS_KEY, [$postId->toString()]);
+        $this->assertThatCacheContainsRange('publishers', ['john@doe.com' => 1]);
     }
 
     /** @test */
     public function it_applies_that_post_was_published_when_a_few_posts_were_already_published()
     {
-        $postId1 = Uuid::uuid4();
-        $postId2 = Uuid::uuid4();
-        $postId3 = Uuid::uuid4();
-        $postId4 = Uuid::uuid4();
-
         $this->given(
-            new PostWasPublished($postId1, 'john@doe.com', 'Lorem ipsum.', new \DateTime('2017-01-01')),
-            new PostWasPublished($postId2, 'joan@doe.com', 'Lorem ipsum.', new \DateTime('2017-01-01')),
-            new PostWasPublished($postId3, 'contact@lzakrzewski.com', 'Lorem ipsum.', new \DateTime('2017-01-01'))
+            new PostWasPublished(Uuid::uuid4(), 'john@doe.com', 'Lorem ipsum 1.', new \DateTime('2017-01-01')),
+            new PostWasPublished(Uuid::uuid4(), 'john@doe.com', 'Lorem ipsum 2.', new \DateTime('2017-01-01')),
+            new PostWasPublished(Uuid::uuid4(), 'joan@doe.com', 'Lorem ipsum 1.', new \DateTime('2017-01-01')),
+            new PostWasPublished(Uuid::uuid4(), 'contact@lzakrzewski.com', 'Lorem ipsum 1.', new \DateTime('2017-01-01'))
         );
 
         $this->projector->applyThatPostWasPublished(
-            new PostWasPublished($postId4, 'john@doe.com', 'Lorem ipsum.', new \DateTime('2017-01-01'))
+            new PostWasPublished(Uuid::uuid4(), 'john@doe.com', 'Lorem ipsum 3.', new \DateTime('2017-01-01'))
         );
 
-        $this->assertThatCacheContainsSetOnKey(RedisPublisherStatisticsProjector::PUBLISHERS_KEY, ['john@doe.com', 'joan@doe.com', 'contact@lzakrzewski.com']);
-        $this->assertThatCacheContainsOnKey($this->publisherKey('john@doe.com'), 2);
-        $this->assertThatCacheContainsOnKey($this->publisherKey('joan@doe.com'), 1);
-        $this->assertThatCacheContainsOnKey($this->publisherKey('contact@lzakrzewski.com'), 1);
-        $this->assertThatCacheContainsSetOnKey(
-            RedisPublisherStatisticsProjector::POSTS_KEY,
+        $this->assertThatCacheContainsRange(
+            'publishers',
             [
-                $postId1->toString(),
-                $postId2->toString(),
-                $postId3->toString(),
-                $postId4->toString(),
+                'john@doe.com'            => 3,
+                'joan@doe.com'            => 1,
+                'contact@lzakrzewski.com' => 1,
             ]
         );
     }
@@ -73,10 +60,5 @@ class RedisPublisherStatisticsProjectorTest extends CacheTestCase
         $this->projector = null;
 
         parent::tearDown();
-    }
-
-    private function publisherKey(string $publisher): string
-    {
-        return sprintf(RedisPublisherStatisticsProjector::PUBLISHER_KEY_PATTERN, $publisher);
     }
 }

@@ -8,12 +8,9 @@ use Predis\Client as RedisClient;
 use Wall\Application\Query\PublisherStatisticsProjector;
 use Wall\Model\PostWasPublished;
 
-//Todo: refactor this
 class RedisPublisherStatisticsProjector implements PublisherStatisticsProjector
 {
-    const PUBLISHERS_KEY        = 'publishers';
-    const POSTS_KEY             = '_posts';
-    const PUBLISHER_KEY_PATTERN = 'publisher_%s';
+    const PUBLISHERS_KEY = 'publishers';
 
     /** @var RedisClient */
     private $redis;
@@ -25,30 +22,19 @@ class RedisPublisherStatisticsProjector implements PublisherStatisticsProjector
 
     public function applyThatPostWasPublished(PostWasPublished $event)
     {
-        $publisherPostsCount = $this->publisherPostCount($event);
+        $publisherRank = $this->publisherScore($event->publisher());
 
-        $pipeline = $this->redis->pipeline();
-
-        $pipeline->sadd(self::PUBLISHERS_KEY, $event->publisher());
-        $pipeline->set($this->publisherKey($event), ++$publisherPostsCount);
-        $pipeline->sadd(self::POSTS_KEY, $event->postId()->toString());
-
-        $pipeline->execute();
+        $this->redis->zadd(self::PUBLISHERS_KEY, ++$publisherRank, $event->publisher());
     }
 
-    private function publisherKey(PostWasPublished $event): string
+    private function publisherScore(string $publisher): int
     {
-        return sprintf(self::PUBLISHER_KEY_PATTERN, $event->publisher());
-    }
+        $publisherRank = $this->redis->zscore(self::PUBLISHERS_KEY, $publisher);
 
-    private function publisherPostCount(PostWasPublished $event): int
-    {
-        $publisherPostsCount = $this->redis->get($this->publisherKey($event));
-
-        if (null === $publisherPostsCount) {
+        if (null === $publisherRank) {
             return 0;
         }
 
-        return (int) $publisherPostsCount;
+        return (int) $publisherRank;
     }
 }

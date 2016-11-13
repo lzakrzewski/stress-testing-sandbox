@@ -10,6 +10,9 @@ use Wall\Model\PostWasPublished;
 
 class RedisPostsListProjector implements PostsListProjector
 {
+    const POSTS_KEY        = 'posts';
+    const POST_KEY_PATTERN = 'post:%s';
+
     /** @var RedisClient */
     private $redis;
 
@@ -22,7 +25,7 @@ class RedisPostsListProjector implements PostsListProjector
     {
         $pipeline = $this->redis->pipeline();
 
-        $pipeline->zadd('posts', $event->at()->getTimestamp(), $this->key($event))
+        $pipeline->zadd(self::POSTS_KEY, $event->at()->getTimestamp(), $this->key($event))
             ->set($this->key($event), $this->serialize($event))
             ->execute();
     }
@@ -39,6 +42,6 @@ class RedisPostsListProjector implements PostsListProjector
 
     private function key(PostWasPublished $event): string
     {
-        return sprintf('post:%s', $event->postId()->toString());
+        return sprintf(self::POST_KEY_PATTERN, $event->postId()->toString());
     }
 }
