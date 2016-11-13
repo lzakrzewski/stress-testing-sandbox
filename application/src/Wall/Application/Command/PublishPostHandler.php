@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Wall\Application\Command;
 
-use SimpleBus\Message\Bus\MessageBus;
 use Wall\Model\Post;
 use Wall\Model\PostRepository;
 
@@ -13,13 +12,9 @@ final class PublishPostHandler
     /** @var PostRepository */
     private $posts;
 
-    /** @var MessageBus */
-    private $eventBus;
-
-    public function __construct(PostRepository $posts, MessageBus $eventBus)
+    public function __construct(PostRepository $posts)
     {
-        $this->posts    = $posts;
-        $this->eventBus = $eventBus;
+        $this->posts = $posts;
     }
 
     public function handle(PublishPost $publishPost)
@@ -32,9 +27,5 @@ final class PublishPostHandler
         );
 
         $this->posts->add($post);
-
-        array_map(function ($event) {
-            $this->eventBus->handle($event);
-        }, $post->events());
     }
 }

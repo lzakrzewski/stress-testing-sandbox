@@ -6,7 +6,7 @@ namespace Wall\Application\Container;
 
 use DI\ContainerBuilder as DIContainerBuilder;
 use Wall\Application\Container\Definitions\CommandBusDefinitions;
-use Wall\Application\Container\Definitions\CommandDefinitions;
+use Wall\Application\Container\Definitions\CommandHandlerDefinitions;
 use Wall\Application\Container\Definitions\EventBusDefinitions;
 use Wall\Application\Container\Definitions\HttpDefinitions;
 use Wall\Application\Container\Definitions\Infrastructure\ProjectorDefinitions;
@@ -23,7 +23,7 @@ final class ContainerBuilder
         $builder = new DIContainerBuilder();
 
         $builder->addDefinitions(CommandBusDefinitions::get());
-        $builder->addDefinitions(CommandDefinitions::get());
+        $builder->addDefinitions(CommandHandlerDefinitions::get());
         $builder->addDefinitions(HttpDefinitions::get());
         $builder->addDefinitions(EventBusDefinitions::get());
         $builder->addDefinitions(RepositoryDefinitions::get());
