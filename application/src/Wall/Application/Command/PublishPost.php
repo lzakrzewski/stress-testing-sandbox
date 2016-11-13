@@ -17,15 +17,11 @@ final class PublishPost
     /** @var string */
     private $content;
 
-    /** @var \DateTime */
-    private $at;
-
-    public function __construct(UuidInterface $postId, string $publisher, string $content, \DateTime $at)
+    public function __construct(UuidInterface $postId, string $publisher, string $content)
     {
         $this->postId    = $postId;
         $this->content   = $content;
         $this->publisher = $publisher;
-        $this->at        = $at;
     }
 
     public function postId(): UuidInterface
@@ -41,10 +37,5 @@ final class PublishPost
     public function content(): string
     {
         return $this->content;
-    }
-
-    public function at(): \DateTime
-    {
-        return $this->at;
     }
 }

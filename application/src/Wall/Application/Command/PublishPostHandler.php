@@ -19,12 +19,7 @@ final class PublishPostHandler
 
     public function handle(PublishPost $publishPost)
     {
-        $post = Post::publish(
-            $publishPost->postId(),
-            $publishPost->publisher(),
-            $publishPost->content(),
-            $publishPost->at()
-        );
+        $post = Post::publish($publishPost->postId(), $publishPost->publisher(), $publishPost->content());
 
         $this->posts->add($post);
     }

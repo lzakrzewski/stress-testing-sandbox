@@ -19,7 +19,7 @@ class RecordedEventDispatchingPostRepositoryTest extends IntegrationTestCase
     /** @test */
     public function it_can_record_events_when_post_was_added_to_repository()
     {
-        $post = Post::publish(Uuid::uuid4(), 'john@doe.com', 'Lorem ipsum.', new \DateTime('2017-01-01'));
+        $post = Post::publish(Uuid::uuid4(), 'john@doe.com', 'Lorem ipsum.');
 
         $this->repository->add($post);
 

@@ -30,7 +30,7 @@ class WallContext extends FeatureContext
      */
     public function iPublishPostWithIdAndContent(UuidInterface $postId, string $content)
     {
-        $this->handle(new PublishPost($postId, $this->publisher, $content, new \DateTime()));
+        $this->handle(new PublishPost($postId, $this->publisher, $content));
     }
 
     /**

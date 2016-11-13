@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Wall\Model;
 
 use Assert\Assertion;
+use Carbon\Carbon;
 use Ramsey\Uuid\UuidInterface;
 
-//Todo: Encapsulate date of creation
 final class Post
 {
     /** @var UuidInterface */
@@ -25,7 +25,7 @@ final class Post
     /** @var string */
     private $publisher;
 
-    private function __construct(UuidInterface $postId, string $publisher, string $content, \DateTime $at)
+    private function __construct(UuidInterface $postId, string $publisher, string $content)
     {
         Assertion::notEmpty($publisher, 'Publisher should not be blank.');
         Assertion::email($publisher, 'Email of publisher is invalid.');
@@ -34,14 +34,14 @@ final class Post
         $this->postId    = $postId;
         $this->publisher = $publisher;
         $this->content   = $content;
-        $this->at        = $at;
+        $this->at        = Carbon::now();
 
         $this->recordThat(new PostWasPublished($this->postId, $this->publisher, $this->content, $this->at));
     }
 
-    public static function publish(UuidInterface $postId, string $publisher, string $content, \DateTime $at): self
+    public static function publish(UuidInterface $postId, string $publisher, string $content): self
     {
-        return new self($postId, $publisher, $content, $at);
+        return new self($postId, $publisher, $content);
     }
 
     public function postId(): UuidInterface

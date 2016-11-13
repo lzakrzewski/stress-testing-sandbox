@@ -23,6 +23,7 @@
         "php": ">=7.0",
 
         "ramsey/uuid": "~3.0",
+        "nesbot/carbon": "~1.21",
         "incenteev/composer-parameter-handler": "~2.0",
         "webmozart/assert": "~1.1.0",
         "predis/predis": "~1.1.1",
