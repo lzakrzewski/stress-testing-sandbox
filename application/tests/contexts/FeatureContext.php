@@ -11,7 +11,7 @@ use Predis\Client as RedisClient;
 use SimpleBus\Message\Bus\MessageBus;
 use tests\Wall\Application\CommandBus\CollectEventsMiddleware;
 use tests\Wall\Application\Container\TestContainerBuilder;
-use Wall\Model\PostRepository;
+use Wall\Application\Query\PostsListQuery;
 
 abstract class FeatureContext implements Context
 {
@@ -42,10 +42,11 @@ abstract class FeatureContext implements Context
         }
     }
 
-    protected function posts(): PostRepository
+    protected function posts(): array
     {
-        return $this->container->get(PostRepository::class);
+        return $this->container->get(PostsListQuery::class)->get();
     }
+
     protected function expectEvent(string $eventClass)
     {
         $events = $this->filterByClassName(

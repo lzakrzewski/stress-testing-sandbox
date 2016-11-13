@@ -10,7 +10,7 @@ use DI\Container;
 use Doctrine\Common\Cache\PredisCache;
 use Predis\Client as RedisClient;
 use Wall\Application\Container\Definitions\Definitions;
-use Wall\Infrastructure\Persistence\Cache\RedisPostRepository;
+use Wall\Infrastructure\Persistence\EventBus\RecordedEventDispatchingPostRepository;
 use Wall\Model\PostRepository;
 
 final class RepositoryDefinitions implements Definitions
@@ -30,9 +30,9 @@ final class RepositoryDefinitions implements Definitions
                 ->constructor(DI\get(RedisClient::class)),
             DeviceDetector::class => DI\object()
                 ->method('setCache', DI\get(PredisCache::class)),
-            RedisPostRepository::class => DI\object()
-                ->constructor(DI\get(RedisClient::class)),
-            PostRepository::class => DI\get(RedisPostRepository::class),
+            RecordedEventDispatchingPostRepository::class => DI\object()
+                ->constructor(DI\get('event_bus')),
+            PostRepository::class => DI\get(RecordedEventDispatchingPostRepository::class),
         ];
     }
 }

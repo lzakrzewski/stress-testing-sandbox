@@ -8,8 +8,8 @@ use Assert\Assertion;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Wall\Application\Command\PublishPost;
+use Wall\Application\Query\Result\PostResult;
 use Wall\Model\Post;
-use Wall\Model\PostDoesNotExist;
 use Wall\Model\PostWasPublished;
 
 class WallContext extends FeatureContext
@@ -54,7 +54,7 @@ class WallContext extends FeatureContext
      */
     public function iPostShouldBePublished(UuidInterface $postId)
     {
-        Assertion::isInstanceOf($this->posts()->get($postId), Post::class);
+        Assertion::true($this->hasPostPublished($postId));
     }
 
     /**
@@ -62,13 +62,7 @@ class WallContext extends FeatureContext
      */
     public function iPostShouldNotBePublished(UuidInterface $postId)
     {
-        $exception = null;
-        try {
-            $this->posts()->get($postId);
-        } catch (\Exception $exception) {
-        }
-
-        Assertion::isInstanceOf($exception, PostDoesNotExist::class);
+        Assertion::false($this->hasPostPublished($postId));
     }
 
     /**
@@ -87,5 +81,14 @@ class WallContext extends FeatureContext
     public function postId($postId): UuidInterface
     {
         return Uuid::fromString($postId);
+    }
+
+    private function hasPostPublished(UuidInterface $postId)
+    {
+        $postsWithId = array_filter($this->posts(), function (PostResult $post) use ($postId) {
+            return $postId->equals(Uuid::fromString($post->postId));
+        });
+
+        return !empty($postsWithId);
     }
 }

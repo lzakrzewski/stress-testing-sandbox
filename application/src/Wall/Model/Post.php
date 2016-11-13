@@ -32,11 +32,11 @@ final class Post
         Assertion::notEmpty($content, 'Content should not be blank.');
 
         $this->postId    = $postId;
+        $this->publisher = $publisher;
         $this->content   = $content;
         $this->at        = $at;
-        $this->publisher = $publisher;
 
-        $this->events[] = new PostWasPublished($this->postId, $this->publisher, $this->content, $this->at);
+        $this->recordThat(new PostWasPublished($this->postId, $this->publisher, $this->content, $this->at));
     }
 
     public static function publish(UuidInterface $postId, string $publisher, string $content, \DateTime $at): self
@@ -67,5 +67,10 @@ final class Post
     public function events(): array
     {
         return $this->events;
+    }
+
+    private function recordThat(PostWasPublished $event)
+    {
+        $this->events[] = $event;
     }
 }
