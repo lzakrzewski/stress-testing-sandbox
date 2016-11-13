@@ -29,12 +29,12 @@ class RedisPublisherStatisticsProjector implements PublisherStatisticsProjector
 
     private function publisherScore(string $publisher): int
     {
-        $publisherRank = $this->redis->zscore(self::PUBLISHERS_KEY, $publisher);
+        $publisherScore = $this->redis->zscore(self::PUBLISHERS_KEY, $publisher);
 
-        if (null === $publisherRank) {
+        if (null === $publisherScore) {
             return 0;
         }
 
-        return (int) $publisherRank;
+        return (int) $publisherScore;
     }
 }

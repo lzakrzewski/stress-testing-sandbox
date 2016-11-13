@@ -4,19 +4,13 @@ declare(strict_types=1);
 
 namespace tests\integration\Wall\Infrastructure\Query\Cache;
 
-use DeviceDetector\DeviceDetector;
-use Predis\Client as RedisClient;
-use tests\integration\Wall\Infrastructure\CacheTestCase;
-use tests\integration\Wall\Infrastructure\Query\Cache\Dictionary\ClientStatisticsDictionary;
+use tests\integration\Wall\Infrastructure\RequestTestCase;
 use Wall\Application\Query\ClientStatisticsQuery;
 use Wall\Application\Query\Result\ClientStatisticsResult;
-use Wall\Infrastructure\Query\Cache\RedisClientStatisticsProjector;
 use Wall\Infrastructure\Query\Cache\RedisClientStatisticsQuery;
 
-class RedisClientStatisticsQueryTest extends CacheTestCase
+class RedisClientStatisticsQueryTest extends RequestTestCase
 {
-    use ClientStatisticsDictionary;
-
     /** @var RedisClientStatisticsQuery */
     private $query;
 
@@ -31,16 +25,10 @@ class RedisClientStatisticsQueryTest extends CacheTestCase
     /** @test */
     public function it_returns_statistics()
     {
-        $this->given(
-            $this->requestWithUserAgent(
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0'
-            ),
-            $this->requestWithUserAgent(
-                'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.85 Safari/537.36'
-            ),
-            $this->requestWithUserAgent(
-                'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:12.0) Gecko/20100101 Firefox/12.0'
-            )
+        $this->givenRequestsWithUserAgentWereExecuted(
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0',
+            'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.85 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:12.0) Gecko/20100101 Firefox/12.0'
         );
 
         $statistics = $this->query->get();
@@ -60,18 +48,5 @@ class RedisClientStatisticsQueryTest extends CacheTestCase
         $this->query = null;
 
         parent::tearDown();
-    }
-
-    protected function given(...$requests)
-    {
-        foreach ($requests as $request) {
-            $projector = new RedisClientStatisticsProjector(
-                $this->container()->get(RedisClient::class),
-                $this->container()->get(DeviceDetector::class),
-                $request
-            );
-
-            $projector->project();
-        }
     }
 }
