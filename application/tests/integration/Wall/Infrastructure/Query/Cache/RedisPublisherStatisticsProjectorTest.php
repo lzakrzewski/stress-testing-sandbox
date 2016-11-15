@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace integration\Wall\Infrastructure\Query\Cache;
 
 use Ramsey\Uuid\Uuid;
-use tests\integration\Wall\Infrastructure\CacheTestCase;
+use tests\integration\Wall\CacheTestCase;
 use Wall\Infrastructure\Query\Cache\RedisPublisherStatisticsProjector;
 use Wall\Model\PostWasPublished;
 

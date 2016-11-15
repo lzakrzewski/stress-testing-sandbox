@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace tests\integration\Wall\Http\Controller;
 
-use tests\integration\IntegrationTestCase;
+use tests\integration\Wall\CacheTestCase;
 use tests\integration\Wall\Http\TestClient;
 
-abstract class ControllerTestCase extends IntegrationTestCase
+abstract class ControllerTestCase extends CacheTestCase
 {
     /** @var TestClient */
     private $client;

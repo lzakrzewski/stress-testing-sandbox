@@ -10,7 +10,7 @@ final class PublisherStatisticsResult
     public $postCount;
 
     /** @var string */
-    private $mostActivePublisher;
+    public $mostActivePublisher;
 
     public function __construct(int $postCount = 0, string $mostActivePublisher = null)
     {

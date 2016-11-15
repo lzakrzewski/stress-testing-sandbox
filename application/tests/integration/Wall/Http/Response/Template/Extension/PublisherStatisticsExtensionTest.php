@@ -21,11 +21,12 @@ class PublisherStatisticsExtensionTest extends IntegrationTestCase
     /** @test */
     public function it_can_render_sidebar_html()
     {
-        $this->query->get()->willReturn(new PublisherStatisticsResult(1234));
+        $this->query->get()->willReturn(new PublisherStatisticsResult(1234, 'john@doe.com'));
 
         $html = $this->extension->publisherStatistics();
 
         $this->assertContains('1234', $html);
+        $this->assertContains('john@doe.com', $html);
     }
 
     protected function setUp()

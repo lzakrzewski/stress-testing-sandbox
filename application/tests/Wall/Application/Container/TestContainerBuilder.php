@@ -25,6 +25,11 @@ final class TestContainerBuilder
 
                 return $eventBus;
             }),
+            \Twig_Environment::class => DI\decorate(function (\Twig_Environment $twig) {
+                $twig->setCache(new \Twig_Cache_Null());
+
+                return $twig;
+            }),
             ServerRequestInterface::class => DI\decorate(function (ServerRequestInterface $request) {
                 return TestServerRequest::fromServerRequest($request);
             }),

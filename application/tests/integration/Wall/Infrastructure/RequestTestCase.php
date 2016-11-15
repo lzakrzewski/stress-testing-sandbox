@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace tests\integration\Wall\Infrastructure;
 
 use Ramsey\Uuid\Uuid;
+use tests\integration\Wall\CacheTestCase;
 use tests\Wall\Http\TestServerRequest;
 use Wall\Model\PostWasPublished;
 

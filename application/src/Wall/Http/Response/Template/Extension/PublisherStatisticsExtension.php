@@ -27,7 +27,7 @@ class PublisherStatisticsExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('publisherStatistics', [$this, 'publisherStatistics']),
+            new \Twig_SimpleFunction('publisherStatistics', [$this, 'publisherStatistics'], ['is_safe' => ['html']]),
         ];
     }
 

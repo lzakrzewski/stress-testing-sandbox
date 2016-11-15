@@ -1,7 +1,15 @@
 <div class="col-lg-3">
-    <div data-spy="affix" data-offset-top="0">
-        <div class="list-group">
-            <div class="list-group-item active">{{ publisherStatistics.postCount }}</div>
+    <h3>Publisher statistics</h3>
+    <div class="panel panel-default">
+        <div class="panel-heading">Total post count</div>
+        <div class="panel-body">
+            <span class="badge">{{ publisherStatistics.postCount }}</span>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Most active publisher</div>
+        <div class="panel-body">
+            {{ publisherStatistics.mostActivePublisher }}
         </div>
     </div>
 </div>

@@ -15,8 +15,10 @@ final class TwigDefinitions implements Definitions
     public static function get(): array
     {
         return [
-            'twig.template.path'                => __DIR__.'/../../../Http/Response/Template',
-            'twig.cache.path'                   => __DIR__.'/../../../../../var/cache',
+            'twig.template.path' => __DIR__.'/../../../Http/Response/Template',
+            'twig.config'        => [
+                'cache' => __DIR__.'/../../../../../var/cache',
+            ],
             PublisherStatisticsExtension::class => DI\object()
                 ->constructor(DI\get(PublisherStatisticsQuery::class)),
             ClientStatisticsExtension::class => DI\object()
@@ -24,7 +26,7 @@ final class TwigDefinitions implements Definitions
             \Twig_Loader_Filesystem::class => DI\object()
                 ->constructor(DI\get('twig.template.path')),
             \Twig_Environment::class => DI\object()
-                ->constructor(DI\get(\Twig_Loader_Filesystem::class))
+                ->constructor(DI\get(\Twig_Loader_Filesystem::class), DI\get('twig.config'))
                 ->method('addFunction', new \Twig_SimpleFunction('asset', function ($asset) {
                     return sprintf('%s', ltrim($asset, '/'));
                 }))

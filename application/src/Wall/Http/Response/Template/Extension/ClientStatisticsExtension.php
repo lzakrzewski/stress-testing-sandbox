@@ -27,7 +27,7 @@ class ClientStatisticsExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('clientStatistics', [$this, 'clientStatistics']),
+            new \Twig_SimpleFunction('clientStatistics', [$this, 'clientStatistics'], ['is_safe' => ['html']]),
         ];
     }
 

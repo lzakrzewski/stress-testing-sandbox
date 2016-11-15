@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\Wall\Infrastructure;
+namespace tests\integration\Wall;
 
 use Assert\Assertion;
 use Predis\Client as RedisClient;

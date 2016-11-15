@@ -9,6 +9,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
 use Wall\Application\Command\PublishPost;
+use Wall\Application\Query\PostsListQuery;
 use Wall\Http\Response\HtmlResponse;
 
 class WallController
@@ -30,29 +31,26 @@ class WallController
                 new PublishPost(Uuid::uuid4(), $postData['publisher'], $postData['content'], new \DateTime())
             );
         } catch (\InvalidArgumentException $exception) {
-            return $this->render(
-                'index.html.twig',
-                [
-                    'error' => $exception->getMessage(),
-                ],
-                400
-            );
+            return $this->render(['error' => $exception->getMessage()], 400);
         }
 
-        return $this->render('index.html.twig', ['success' => 'Post created!'], 201);
+        return $this->render(['success' => 'Post created!'], 201);
     }
 
     public function wallAction(): ResponseInterface
     {
-        return $this->render('index.html.twig', ['posts' => []]);
+        return $this->render();
     }
 
-    private function render(string $templateName, array $parameters = [], $status = 200): HtmlResponse
+    private function render(array $parameters = [], $status = 200): HtmlResponse
     {
         return new HtmlResponse(
             $this->container
                 ->get(\Twig_Environment::class)
-                ->render($templateName, $parameters),
+                ->render(
+                    'index.html.twig',
+                    array_merge(['posts' => $this->container->get(PostsListQuery::class)->get()], $parameters)
+                ),
             $status
         );
     }

@@ -1,8 +1,15 @@
 <div class="col-lg-3">
-    <div data-spy="affix" data-offset-top="0">
-        <div class="list-group">
-            <div class="list-group-item active">{{ clientStatistics.mostOftenUsedBrowser }}</div>
-            <div class="list-group-item active">{{ clientStatistics.mostOftenUsedOS }}</div>
+    <h3>Client statistics</h3>
+    <div class="panel panel-default">
+        <div class="panel-heading">Most often browser</div>
+        <div class="panel-body">
+            {{ clientStatistics.mostOftenUsedBrowser }}
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Most often used OS</div>
+        <div class="panel-body">
+            {{ clientStatistics.mostOftenUsedOS }}
         </div>
     </div>
 </div>
