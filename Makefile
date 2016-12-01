@@ -2,10 +2,10 @@ ROOT_DIR ?= $(PWD)
 USER_ID   = $(shell id -u)
 GROUP_ID  = $(shell id -g)
 
-DOCKER_BUILD_CONTEXT_DIR = docker
-PLATFORM_NETWORK         = platform_network
-LOCAL_COMPOSER_HOME_DIR  = $(HOME)/.composer
-REMOTE_COMPOSER_HOME_DIR = /root/.composer
+DOCKER_BUILD_CONTEXT_DIR     = docker
+PLATFORM_NETWORK             = platform_network
+LOCAL_COMPOSER_HOME_DIR      = $(HOME)/.composer
+CONTAINER_COMPOSER_HOME_DIR  = /tmp/.composer
 
 CACHE_CONTAINER          = cache
 CACHE_PORT               = 6379
@@ -34,14 +34,14 @@ application_build:
 	docker build -t $(APPLICATION_IMAGE) -f $(APPLICATION_IMAGE_FILE) $(DOCKER_BUILD_CONTEXT_DIR)
 
 application_up: application_build
-	docker run --name $(APPLICATION_CONTAINER) -h $(APPLICATION_CONTAINER) --network $(PLATFORM_NETWORK) -v $(LOCAL_COMPOSER_HOME_DIR):$(REMOTE_COMPOSER_HOME_DIR) -v $(APPLICATION_LOCAL_DIR):/application -p $(APPLICATION_EXPOSE_PORT):$(APPLICATION_PORT) -d $(APPLICATION_IMAGE)
+	docker run --name $(APPLICATION_CONTAINER) -h $(APPLICATION_CONTAINER) --network $(PLATFORM_NETWORK) -v $(LOCAL_COMPOSER_HOME_DIR):$(CONTAINER_COMPOSER_HOME_DIR) -v $(APPLICATION_LOCAL_DIR):/application -p $(APPLICATION_EXPOSE_PORT):$(APPLICATION_PORT) -d $(APPLICATION_IMAGE)
 	docker exec --user $(USER_ID):$(GROUP_ID) $(APPLICATION_CONTAINER) composer install -n
 
 application_down:
 	-docker rm -f $(APPLICATION_CONTAINER)
 
 platform_up: \
-    network_up \
+	network_up \
 	cache_up \
 	application_up
 
@@ -52,4 +52,4 @@ platform_down: \
 
 test_ci: \
 	platform_up
-	cd application && composer test-ci
+	docker exec --user $(USER_ID):$(GROUP_ID) $(APPLICATION_CONTAINER) composer test-ci

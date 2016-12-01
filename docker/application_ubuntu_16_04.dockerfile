@@ -12,4 +12,6 @@ RUN mkdir --parent /usr/src/composer && \
 
 WORKDIR /application
 
+ENV COMPOSER_HOME /tmp/.composer
+
 CMD php -S 0.0.0.0:8000 -t web/
