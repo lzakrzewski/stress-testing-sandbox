@@ -24,6 +24,11 @@ TEST_HOST_IMAGE_FILE  = docker/test_host_ubuntu_16_04.dockerfile
 TEST_HOST_PORT        = 22
 TEST_HOST_EXPOSE_PORT = 22
 
+BUILD_DIR = ansible/build
+REPOSITORY_DIR = $(BUILD_DIR)/repository
+REPOSITORY_URL = git@github.com:lzakrzewski/aws-stress-test.git
+PACKAGE_DIR = $(BUILD_DIR)/package
+
 network_up:
 	docker network create --driver bridge --subnet 172.20.0.0/16 $(PLATFORM_NETWORK)
 
@@ -63,6 +68,17 @@ test_host_down:
 
 test_host_provision:
 	ansible-playbook -i ansible/inventories/hosts -l test ansible/provision.yml
+
+build_package:
+	rm -rf $(REPOSITORY_DIR)
+	rm -rf $(PACKAGE_DIR)
+	mkdir -p $(REPOSITORY_DIR)
+	mkdir -p $(PACKAGE_DIR)
+	git clone --depth 1 $(REPOSITORY_URL) $(REPOSITORY_DIR)
+	tar --exclude-vcs-ignores --exclude-vcs --directory $(REPOSITORY_DIR)/application -czf $(PACKAGE_DIR)/application.tar.gz .
+
+test_host_deploy: build_package
+	ansible-playbook -i ansible/inventories/hosts -l test ansible/deploy.yml
 
 platform_up: \
 	network_up \

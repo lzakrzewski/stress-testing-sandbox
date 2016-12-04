@@ -1,0 +1,5 @@
+---
+- name: Ensure app is uploaded
+  unarchive:
+    src: "{{ inventory_dir }}/../build/package/{{ app_name }}.tar.gz"
+    dest: "{{ release_dir }}"

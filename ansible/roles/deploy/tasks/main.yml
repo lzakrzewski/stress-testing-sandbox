@@ -1,0 +1,4 @@
+---
+- include: directories.yml
+- include: application.yml
+- include: composer.yml
