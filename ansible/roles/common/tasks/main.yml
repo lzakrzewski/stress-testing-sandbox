@@ -1,0 +1,9 @@
+---
+  - name: Ensure OS is supported
+    fail:
+      msg: "Only Ubuntu is supported."
+    when: ansible_distribution != "Ubuntu"
+
+  - name: Ensure fresh APT cache
+    apt:
+      update_cache: yes

@@ -1,0 +1,10 @@
+---
+  - name: Ensure fresh APT cache
+    apt:
+      update_cache: yes
+
+  - name: Install required software
+    apt: name={{ item }} state=present
+    become_user: yes
+    with_items:
+      - php7.0-fpm
