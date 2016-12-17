@@ -1,10 +1,10 @@
 ---
-- name: "handlers : ensure Nginx service reloaded"
+- name: reload nginx
   service:
     name: nginx
     state: reloaded
 
-- name: "handlers : ensure PHP FPM service reloaded"
+- name: reload php-fpm
   service:
     name: php7.0-fpm
     state: reloaded

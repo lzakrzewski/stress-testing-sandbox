@@ -1,5 +1,5 @@
 ---
-- name: Ensure app composer tasks
+- name: Install composer
   shell: composer {{ item }}
   args:
     chdir: "{{ release_dir }}"

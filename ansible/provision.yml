@@ -2,7 +2,7 @@
 - hosts: test
   roles:
     - common
-    - nginx
     - php
     - php-fpm
+    - nginx
     - composer

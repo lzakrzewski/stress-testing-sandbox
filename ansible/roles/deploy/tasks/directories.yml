@@ -5,11 +5,11 @@
     state: directory
     mode: 0755
 
-- name: Ensure release dir path
+- name: Ensure release directory
   set_fact:
     release_dir: "{{ server_apps_dir }}/{{ app_name }}"
 
-- name: Clean release path
+- name: Clean release directory
   file:
     state: absent
     path: "{{ release_dir }}/"

@@ -1,0 +1,6 @@
+---
+  - name: Prepare cache directory
+    file:
+      path: "{{ release_dir }}/var/cache"
+      state: directory
+      mode: 0777

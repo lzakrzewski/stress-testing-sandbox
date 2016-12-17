@@ -1,0 +1,6 @@
+---
+  - name: Prepare web server
+    shell: echo "Successfully deployed."
+    notify:
+      - reload nginx
+      - reload php-fpm
