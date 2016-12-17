@@ -1,3 +1,4 @@
 ---
-server_apps_dir: "/srv"
+release_dir: "/srv/application"
+public_dir: "{{ release_dir }}/web"
 app_name: application

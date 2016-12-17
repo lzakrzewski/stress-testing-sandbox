@@ -1,13 +1,9 @@
 ---
-- name: Ensure apps directory
+- name: Ensure release directory
   file:
-    path: "{{ server_apps_dir }}"
+    path: "{{ release_dir }}"
     state: directory
     mode: 0755
-
-- name: Ensure release directory
-  set_fact:
-    release_dir: "{{ server_apps_dir }}/{{ app_name }}"
 
 - name: Clean release directory
   file:

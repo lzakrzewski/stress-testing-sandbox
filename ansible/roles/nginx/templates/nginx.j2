@@ -5,7 +5,7 @@ upstream php-fpm {
 server {
 	listen 80;
 	server_name localhost;
-	root /srv/application/web/;
+	root {{ public_dir }}/;
 
     location / {
         try_files $uri /index.php$is_args$args;
