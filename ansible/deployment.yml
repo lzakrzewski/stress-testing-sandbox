@@ -6,3 +6,4 @@
     - php-fpm
     - nginx
     - composer
+    - deploy

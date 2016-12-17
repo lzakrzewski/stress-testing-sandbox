@@ -68,9 +68,6 @@ test_host_up: test_host_build
 test_host_down:
 	-docker rm -f $(TEST_HOST_CONTAINER)
 
-test_host_provision:
-	ansible-playbook -i ansible/inventories/hosts -l test ansible/provision.yml
-
 build_package:
 	rm -rf $(REPOSITORY_DIR)
 	rm -rf $(PACKAGE_DIR)
@@ -79,8 +76,8 @@ build_package:
 	git clone --depth 1 $(REPOSITORY_URL) $(REPOSITORY_DIR)
 	tar --exclude-vcs-ignores --exclude-vcs --directory $(REPOSITORY_DIR)/application -czf $(PACKAGE_DIR)/application.tar.gz .
 
-test_host_deploy: build_package test_host_provision
-	ansible-playbook -i ansible/inventories/hosts -l test ansible/deploy.yml
+test_host_deploy: build_package
+	ansible-playbook -i ansible/inventories/hosts -l test ansible/deployment.yml
 
 test_infrastructure_up: \
 	network_up \
