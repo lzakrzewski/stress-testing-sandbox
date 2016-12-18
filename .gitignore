@@ -1,2 +1,2 @@
-ansible/inventories/keys
-ansible/build
+ansible-deployment/inventories/keys
+ansible-deployment/build

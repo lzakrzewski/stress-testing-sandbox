@@ -2,7 +2,7 @@ ROOT_DIR ?= $(PWD)
 USER_ID   = $(shell id -u)
 GROUP_ID  = $(shell id -g)
 
-DOCKER_BUILD_CONTEXT_DIR    = docker
+DOCKER_BUILD_CONTEXT_DIR    = docker-containerization
 PLATFORM_NETWORK            = platform_network
 LOCAL_COMPOSER_HOME_DIR     = $(HOME)/.composer
 CONTAINER_COMPOSER_HOME_DIR = /tmp/.composer
@@ -13,20 +13,20 @@ CACHE_EXPOSE_PORT = 6379
 
 APPLICATION_CONTAINER   = application
 APPLICATION_IMAGE       = application
-APPLICATION_IMAGE_FILE  = docker/application_ubuntu_16_04.dockerfile
+APPLICATION_IMAGE_FILE  = docker-containerization/application_ubuntu_16_04.dockerfile
 APPLICATION_PORT        = 8000
 APPLICATION_EXPOSE_PORT = 8000
 APPLICATION_LOCAL_DIR   = $(ROOT_DIR)/application
 
 TEST_HOST_CONTAINER     = test-host
 TEST_HOST_IMAGE         = test-host
-TEST_HOST_IMAGE_FILE    = docker/test_host_ubuntu_16_04.dockerfile
+TEST_HOST_IMAGE_FILE    = docker-containerization/test_host_ubuntu_16_04.dockerfile
 TEST_HOST_PORT_1        = 22
 TEST_HOST_EXPOSE_PORT_1 = 22
 TEST_HOST_PORT_2        = 80
 TEST_HOST_EXPOSE_PORT_2 = 8000
 
-BUILD_DIR = ansible/build
+BUILD_DIR = ansible-deployment/build
 REPOSITORY_DIR = $(BUILD_DIR)/repository
 REPOSITORY_URL = git@github.com:lzakrzewski/aws-stress-test.git
 PACKAGE_DIR = $(BUILD_DIR)/package
@@ -54,12 +54,12 @@ application_down:
 	-docker rm -f $(APPLICATION_CONTAINER)
 
 ssh_key_gen:
-	-echo N | ssh-keygen -q -t rsa -N "" -f ansible/inventories/keys/id_rsa
+	-echo N | ssh-keygen -q -t rsa -N "" -f ansible-deployment/inventories/keys/id_rsa
 
 test_host_build: ssh_key_gen
 	docker build -t $(TEST_HOST_IMAGE) -f $(TEST_HOST_IMAGE_FILE) $(DOCKER_BUILD_CONTEXT_DIR)
 
-test_host_up: SSH_KEY=`cat ansible/inventories/keys/id_rsa.pub`
+test_host_up: SSH_KEY=`cat ansible-deployment/inventories/keys/id_rsa.pub`
 
 test_host_up: test_host_build
 	docker run --name $(TEST_HOST_CONTAINER) -h $(TEST_HOST_CONTAINER) --network $(PLATFORM_NETWORK) -p $(TEST_HOST_EXPOSE_PORT_1):$(TEST_HOST_PORT_1) -p $(TEST_HOST_EXPOSE_PORT_2):$(TEST_HOST_PORT_2) -d $(TEST_HOST_IMAGE)
@@ -77,7 +77,7 @@ build_package:
 	tar --exclude-vcs-ignores --exclude-vcs --directory $(REPOSITORY_DIR)/application -czf $(PACKAGE_DIR)/application.tar.gz .
 
 test_host_deploy: build_package
-	ansible-playbook -i ansible/inventories/hosts -l test ansible/deployment.yml
+	ansible-playbook -i ansible-deployment/inventories/hosts -l test ansible-deployment/deployment.yml
 
 test_infrastructure_up: \
 	network_up \
