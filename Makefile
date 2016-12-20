@@ -26,10 +26,21 @@ TEST_HOST_EXPOSE_PORT_1 = 22
 TEST_HOST_PORT_2        = 80
 TEST_HOST_EXPOSE_PORT_2 = 8000
 
-BUILD_DIR = ansible-deployment/build
+STRESS_TESTS_CONTAINER            = stress-test
+STRESS_TESTS_IMAGE                = denvazh/gatling
+STRESS_TESTS_DIR                  = $(ROOT_DIR)/gatling-stress-testing
+STRESS_TESTS_LOCAL_CONF           = $(STRESS_TESTS_DIR)/conf
+STRESS_TESTS_CONTAINER_CONF       = /opt/gatling/conf
+STRESS_TESTS_LOCAL_USER_FILES     = $(STRESS_TESTS_DIR)/user-files
+STRESS_TESTS_CONTAINER_USER_FILES = /opt/gatling/user-files
+STRESS_TESTS_LOCAL_RESULTS        = $(STRESS_TESTS_DIR)/results
+STRESS_TESTS_CONTAINER_RESULTS    = /opt/gatling/results
+STRESS_TESTS_SIMULATION           = wall.PublishPostSimulation
+
+BUILD_DIR      = ansible-deployment/build
 REPOSITORY_DIR = $(BUILD_DIR)/repository
 REPOSITORY_URL = git@github.com:lzakrzewski/aws-stress-test.git
-PACKAGE_DIR = $(BUILD_DIR)/package
+PACKAGE_DIR    = $(BUILD_DIR)/package
 
 network_up:
 	docker network create --driver bridge --subnet 172.20.0.0/16 $(PLATFORM_NETWORK)
@@ -78,6 +89,9 @@ build_package:
 
 test_host_deploy: build_package
 	ansible-playbook -i ansible-deployment/inventories/hosts -l test ansible-deployment/deployment.yml
+
+run_stress_test:
+	docker run --net="host" -it --rm --name $(STRESS_TESTS_CONTAINER) -v $(STRESS_TESTS_LOCAL_CONF):$(STRESS_TESTS_CONTAINER_CONF) -v $(STRESS_TESTS_LOCAL_USER_FILES):$(STRESS_TESTS_CONTAINER_USER_FILES) -v $(STRESS_TESTS_LOCAL_RESULTS):$(STRESS_TESTS_CONTAINER_RESULTS) $(STRESS_TESTS_IMAGE) -s $(STRESS_TESTS_SIMULATION)
 
 test_infrastructure_up: \
 	network_up \
