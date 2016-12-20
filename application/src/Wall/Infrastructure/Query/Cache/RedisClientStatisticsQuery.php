@@ -40,23 +40,8 @@ class RedisClientStatisticsQuery implements ClientStatisticsQuery
     {
         $pipeline = $this->redis->pipeline();
 
-        $pipeline->sort(
-            'browsers',
-            [
-                'by'    => 'browser_*',
-                'limit' => [0, 1],
-                'sort'  => 'desc',
-            ]
-        );
-
-        $pipeline->sort(
-            'os',
-            [
-                'by'    => 'os_*',
-                'limit' => [0, 1],
-                'sort'  => 'desc',
-            ]
-        );
+        $pipeline->zrevrange(RedisClientStatisticsProjector::BROWSERS_KEY, 0, 0);
+        $pipeline->zrevrange(RedisClientStatisticsProjector::OS_KEY, 0, 0);
 
         return $pipeline->execute();
     }
