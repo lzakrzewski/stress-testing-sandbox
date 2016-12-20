@@ -15,7 +15,6 @@ object Faker
   }
 
   def emails(): Array[String] = {
-
     return Array(
       "adams@aol.com", "lewis@att.net", "richardson@comcast.net", "tom@facebook.com", "mason@gmail.com", "miller@gmx.com", "johnson@googlemail.com",
       "morris@google.com", "wood@hotmail.com", "wright@hotmail.co.uk", "butler@mac.com", "davis@me.com", "knight@mail.com", "murphy@msn.com",
@@ -38,7 +37,6 @@ object Faker
   }
 
   def contents(): Array[String] = {
-
     return Array(
       "A bond speculates within the chalk!",
       "A behavior storms outside your rain.",
@@ -99,7 +97,6 @@ object Faker
   }
 
   def userAgents(): Array[String] = {
-
     return Array(
       "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0",
       "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.100 Safari/537.36",

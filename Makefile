@@ -28,12 +28,12 @@ TEST_HOST_EXPOSE_PORT_2 = 8000
 
 STRESS_TESTS_CONTAINER            = stress-test
 STRESS_TESTS_IMAGE                = denvazh/gatling
-STRESS_TESTS_DIR                  = $(ROOT_DIR)/gatling-stress-testing
-STRESS_TESTS_LOCAL_CONF           = $(STRESS_TESTS_DIR)/conf
+STRESS_TESTS_LOCAL_DIR            = $(ROOT_DIR)/gatling-stress-testing
+STRESS_TESTS_LOCAL_CONF           = $(STRESS_TESTS_LOCAL_DIR)/conf
 STRESS_TESTS_CONTAINER_CONF       = /opt/gatling/conf
-STRESS_TESTS_LOCAL_USER_FILES     = $(STRESS_TESTS_DIR)/user-files
+STRESS_TESTS_LOCAL_USER_FILES     = $(STRESS_TESTS_LOCAL_DIR)/user-files
 STRESS_TESTS_CONTAINER_USER_FILES = /opt/gatling/user-files
-STRESS_TESTS_LOCAL_RESULTS        = $(STRESS_TESTS_DIR)/results
+STRESS_TESTS_LOCAL_RESULTS        = $(STRESS_TESTS_LOCAL_DIR)/results
 STRESS_TESTS_CONTAINER_RESULTS    = /opt/gatling/results
 STRESS_TESTS_SIMULATION           = wall.PublishPostSimulation
 

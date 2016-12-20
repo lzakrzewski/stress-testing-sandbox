@@ -21,7 +21,7 @@ class PublishPostSimulation extends BaseSimulation
   }
 
   val httpConf = http
-    .baseURL("http://localhost:8000")
+    .baseURL(baseUrl())
     .acceptHeader("${randomAcceptHeader}")
     .acceptLanguageHeader("${randomAcceptLanguageHeader}")
     .userAgentHeader("${randomUserAgentHeader}")
@@ -36,6 +36,6 @@ class PublishPostSimulation extends BaseSimulation
     ).exec(Wall.wall, PublishPost.publish)
 
   setUp(
-    scn.inject(rampUsers(100) over (10 seconds))
+    scn.inject(rampUsersPerSec(usersLow()) to (usersHigh()) during(duration() seconds))
   ).protocols(httpConf)
 }
