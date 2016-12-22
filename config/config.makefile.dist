@@ -1,0 +1,5 @@
+PHP_APPLICATION_HOST      = 0.0.0.0
+PHP_APPLICATION_HOST_USER = root
+REDIS_CACHE_HOST            = cache
+REDIS_CACHE_PORT            = 6379
+SSH_KEY               = ~/.ssh/id_rsa.pub

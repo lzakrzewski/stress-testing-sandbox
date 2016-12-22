@@ -2,6 +2,9 @@ ROOT_DIR ?= $(PWD)
 USER_ID   = $(shell id -u)
 GROUP_ID  = $(shell id -g)
 
+include $(ROOT_DIR)/config/config.makefile.dist
+-include $(ROOT_DIR)/config/config.makefile
+
 DOCKER_BUILD_CONTEXT_DIR    = docker-containerization
 PLATFORM_NETWORK            = platform_network
 LOCAL_COMPOSER_HOME_DIR     = $(HOME)/.composer
@@ -67,14 +70,17 @@ application_down:
 ssh_key_gen:
 	-echo N | ssh-keygen -q -t rsa -N "" -f ansible-deployment/inventories/keys/id_rsa
 
-test_host_build: ssh_key_gen
-	docker build -t $(TEST_HOST_IMAGE) -f $(TEST_HOST_IMAGE_FILE) $(DOCKER_BUILD_CONTEXT_DIR)
+ssh_read: SSH_KEY_RAW=`cat $(PHP_APPLICATION_HOST_SSH_KEY)`
+ssh_read:
+	echo $(SSH_KEY_RAW)
+
+test_host_build: ssh_read
+	docker build --build-arg SSH_KEY_RAW=$(SSH_KEY_RAW) -t $(TEST_HOST_IMAGE) -f $(TEST_HOST_IMAGE_FILE) $(DOCKER_BUILD_CONTEXT_DIR)
 
 test_host_up: SSH_KEY=`cat ansible-deployment/inventories/keys/id_rsa.pub`
 
 test_host_up: test_host_build
 	docker run --name $(TEST_HOST_CONTAINER) -h $(TEST_HOST_CONTAINER) --network $(PLATFORM_NETWORK) -p $(TEST_HOST_EXPOSE_PORT_1):$(TEST_HOST_PORT_1) -p $(TEST_HOST_EXPOSE_PORT_2):$(TEST_HOST_PORT_2) -d $(TEST_HOST_IMAGE)
-	docker exec $(TEST_HOST_CONTAINER) /bin/bash -c "echo $(SSH_KEY) >> /root/.ssh/authorized_keys"
 
 test_host_down:
 	-docker rm -f $(TEST_HOST_CONTAINER)
@@ -87,11 +93,18 @@ build_package:
 	git clone --depth 1 $(REPOSITORY_URL) $(REPOSITORY_DIR)
 	tar --exclude-vcs-ignores --exclude-vcs --directory $(REPOSITORY_DIR)/application -czf $(PACKAGE_DIR)/application.tar.gz .
 
-test_host_deploy: build_package
-	ansible-playbook -i ansible-deployment/inventories/hosts -l test ansible-deployment/deployment.yml
+test_application:
+	docker exec --user $(USER_ID):$(GROUP_ID) $(APPLICATION_CONTAINER) composer test-ci
+
+deploy: build_package
+	ansible-playbook -i '$(PHP_APPLICATION_HOST),' -u $(PHP_APPLICATION_USER) --key-file=$(PHP_APPLICATION_SSH_KEY) ansible-deployment/deployment.yml
 
 run_stress_test:
 	docker run --net="host" -it --rm --name $(STRESS_TESTS_CONTAINER) -v $(STRESS_TESTS_LOCAL_CONF):$(STRESS_TESTS_CONTAINER_CONF) -v $(STRESS_TESTS_LOCAL_USER_FILES):$(STRESS_TESTS_CONTAINER_USER_FILES) -v $(STRESS_TESTS_LOCAL_RESULTS):$(STRESS_TESTS_CONTAINER_RESULTS) $(STRESS_TESTS_IMAGE) -s $(STRESS_TESTS_SIMULATION)
+
+test_ci: \
+	platform_up
+	docker exec --user $(USER_ID):$(GROUP_ID) $(APPLICATION_CONTAINER) composer test-ci
 
 test_infrastructure_up: \
 	network_up \
@@ -113,6 +126,13 @@ platform_down: \
 	application_down \
 	network_down
 
-test_ci: \
-	platform_up
-	docker exec --user $(USER_ID):$(GROUP_ID) $(APPLICATION_CONTAINER) composer test-ci
+test: \
+	network_up \
+	cache_up \
+	application_up \
+	test_application \
+	application_down \
+	test_host_up \
+	deploy \
+	run_stress_test \
+	test_infrastructure_down
