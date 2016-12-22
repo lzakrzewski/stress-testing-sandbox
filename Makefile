@@ -14,6 +14,7 @@ CACHE_CONTAINER   = cache
 CACHE_PORT        = 6379
 CACHE_EXPOSE_PORT = 6379
 
+PHP_APPLICATION_SSH_KEY_RAW = $(shell cat $(PHP_APPLICATION_HOST_SSH_KEY_PUBLIC))
 APPLICATION_CONTAINER   = application
 APPLICATION_IMAGE       = application
 APPLICATION_IMAGE_FILE  = docker-containerization/application_ubuntu_16_04.dockerfile
@@ -42,7 +43,7 @@ STRESS_TESTS_SIMULATION           = wall.PublishPostSimulation
 
 BUILD_DIR      = ansible-deployment/build
 REPOSITORY_DIR = $(BUILD_DIR)/repository
-REPOSITORY_URL = git@github.com:lzakrzewski/aws-stress-test.git
+REPOSITORY_URL = https://github.com/lzakrzewski/aws-stress-test.git
 PACKAGE_DIR    = $(BUILD_DIR)/package
 
 network_up:
@@ -70,12 +71,8 @@ application_down:
 ssh_key_gen:
 	-echo N | ssh-keygen -q -t rsa -N "" -f ansible-deployment/inventories/keys/id_rsa
 
-ssh_read: SSH_KEY_RAW=`cat $(PHP_APPLICATION_HOST_SSH_KEY)`
-ssh_read:
-	echo $(SSH_KEY_RAW)
-
-test_host_build: ssh_read
-	docker build --build-arg SSH_KEY_RAW=$(SSH_KEY_RAW) -t $(TEST_HOST_IMAGE) -f $(TEST_HOST_IMAGE_FILE) $(DOCKER_BUILD_CONTEXT_DIR)
+test_host_build:
+	docker build --build-arg PHP_APPLICATION_SSH_KEY_RAW='$(PHP_APPLICATION_SSH_KEY_RAW)' -t $(TEST_HOST_IMAGE) -f $(TEST_HOST_IMAGE_FILE) $(DOCKER_BUILD_CONTEXT_DIR)
 
 test_host_up: SSH_KEY=`cat ansible-deployment/inventories/keys/id_rsa.pub`
 
@@ -91,20 +88,16 @@ build_package:
 	mkdir -p $(REPOSITORY_DIR)
 	mkdir -p $(PACKAGE_DIR)
 	git clone --depth 1 $(REPOSITORY_URL) $(REPOSITORY_DIR)
-	tar --exclude-vcs-ignores --exclude-vcs --directory $(REPOSITORY_DIR)/application -czf $(PACKAGE_DIR)/application.tar.gz .
+	tar --exclude-vcs --directory $(REPOSITORY_DIR)/application -czf $(PACKAGE_DIR)/application.tar.gz .
 
 test_application:
 	docker exec --user $(USER_ID):$(GROUP_ID) $(APPLICATION_CONTAINER) composer test-ci
 
 deploy: build_package
-	ansible-playbook -i '$(PHP_APPLICATION_HOST),' -u $(PHP_APPLICATION_USER) --key-file=$(PHP_APPLICATION_SSH_KEY) ansible-deployment/deployment.yml
+	ansible-playbook -i '$(PHP_APPLICATION_HOST),' -u $(PHP_APPLICATION_HOST_USER) --key-file=$(PHP_APPLICATION_HOST_SSH_KEY_PRIVATE) ansible-deployment/deployment.yml --ssh-common-args="-o StrictHostKeyChecking=no -o BatchMode=yes"
 
 run_stress_test:
 	docker run --net="host" -it --rm --name $(STRESS_TESTS_CONTAINER) -v $(STRESS_TESTS_LOCAL_CONF):$(STRESS_TESTS_CONTAINER_CONF) -v $(STRESS_TESTS_LOCAL_USER_FILES):$(STRESS_TESTS_CONTAINER_USER_FILES) -v $(STRESS_TESTS_LOCAL_RESULTS):$(STRESS_TESTS_CONTAINER_RESULTS) $(STRESS_TESTS_IMAGE) -s $(STRESS_TESTS_SIMULATION)
-
-test_ci: \
-	platform_up
-	docker exec --user $(USER_ID):$(GROUP_ID) $(APPLICATION_CONTAINER) composer test-ci
 
 test_infrastructure_up: \
 	network_up \
@@ -129,10 +122,6 @@ platform_down: \
 test: \
 	network_up \
 	cache_up \
-	application_up \
-	test_application \
-	application_down \
 	test_host_up \
 	deploy \
-	run_stress_test \
 	test_infrastructure_down

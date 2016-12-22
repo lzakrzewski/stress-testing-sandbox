@@ -1,5 +1,5 @@
 ---
 - name: Upload app
   unarchive:
-    src: "./../build/package/{{ app_name }}.tar.gz"
+    src: "{{ playbook_dir }}/build/package/{{ app_name }}.tar.gz"
     dest: "{{ release_dir }}"
