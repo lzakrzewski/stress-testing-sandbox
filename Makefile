@@ -16,13 +16,13 @@ CACHE_EXPOSE_PORT = 6379
 
 PHP_APPLICATION_HOST_SSH_KEY_PUBLIC  = $(PHP_APPLICATION_HOST_SSH_KEY).pub
 PHP_APPLICATION_HOST_SSH_KEY_PRIVATE = $(PHP_APPLICATION_HOST_SSH_KEY)
-PHP_APPLICATION_SSH_KEY_RAW = $(shell cat $(PHP_APPLICATION_HOST_SSH_KEY_PUBLIC))
-APPLICATION_CONTAINER   = application
-APPLICATION_IMAGE       = application
-APPLICATION_IMAGE_FILE  = docker-containerization/application_ubuntu_16_04.dockerfile
-APPLICATION_PORT        = 8001
-APPLICATION_EXPOSE_PORT = 8001
-APPLICATION_LOCAL_DIR   = $(ROOT_DIR)/application
+PHP_APPLICATION_SSH_KEY_RAW          = $(shell cat $(PHP_APPLICATION_HOST_SSH_KEY_PUBLIC))
+PHP_APPLICATION_CONTAINER            = php-application
+PHP_APPLICATION_IMAGE                = php-application
+PHP_APPLICATION_IMAGE_FILE           = docker-containerization/application_ubuntu_16_04.dockerfile
+PHP_APPLICATION_PORT                 = 8001
+PHP_APPLICATION_EXPOSE_PORT          = 8001
+PHP_APPLICATION_LOCAL_DIR            = $(ROOT_DIR)/php-application
 
 TEST_HOST_CONTAINER     = test-host
 TEST_HOST_IMAGE         = test-host
@@ -32,16 +32,16 @@ TEST_HOST_EXPOSE_PORT_1 = 22
 TEST_HOST_PORT_2        = 80
 TEST_HOST_EXPOSE_PORT_2 = 8000
 
-STRESS_TESTS_CONTAINER            = stress-test
-STRESS_TESTS_IMAGE                = denvazh/gatling
-STRESS_TESTS_LOCAL_DIR            = $(ROOT_DIR)/gatling-stress-testing
-STRESS_TESTS_LOCAL_CONF           = $(STRESS_TESTS_LOCAL_DIR)/conf
-STRESS_TESTS_CONTAINER_CONF       = /opt/gatling/conf
-STRESS_TESTS_LOCAL_USER_FILES     = $(STRESS_TESTS_LOCAL_DIR)/user-files
-STRESS_TESTS_CONTAINER_USER_FILES = /opt/gatling/user-files
-STRESS_TESTS_LOCAL_RESULTS        = $(STRESS_TESTS_LOCAL_DIR)/results
-STRESS_TESTS_CONTAINER_RESULTS    = /opt/gatling/results
-STRESS_TESTS_SIMULATION           = wall.PublishPostSimulation
+GATLING_STRESS_TESTS_CONTAINER            = gatling-stress-testing
+GATLING_STRESS_TESTS_IMAGE                = denvazh/gatling
+GATLING_STRESS_TESTS_LOCAL_DIR            = $(ROOT_DIR)/gatling-stress-testing
+GATLING_STRESS_TESTS_LOCAL_CONF           = $(STRESS_TESTS_LOCAL_DIR)/conf
+GATLING_STRESS_TESTS_CONTAINER_CONF       = /opt/gatling/conf
+GATLING_STRESS_TESTS_LOCAL_USER_FILES     = $(STRESS_TESTS_LOCAL_DIR)/user-files
+GATLING_STRESS_TESTS_CONTAINER_USER_FILES = /opt/gatling/user-files
+GATLING_STRESS_TESTS_LOCAL_RESULTS        = $(STRESS_TESTS_LOCAL_DIR)/results
+GATLING_STRESS_TESTS_CONTAINER_RESULTS    = /opt/gatling/results
+GATLING_STRESS_TESTS_SIMULATION           = wall.PublishPostSimulation
 
 BUILD_DIR      = ansible-deployment/build
 REPOSITORY_DIR = $(BUILD_DIR)/repository
@@ -60,26 +60,21 @@ cache_up:
 cache_down:
 	-docker rm -f $(CACHE_CONTAINER)
 
-application_build:
-	docker build -t $(APPLICATION_IMAGE) -f $(APPLICATION_IMAGE_FILE) $(DOCKER_BUILD_CONTEXT_DIR)
+php_application_build:
+	docker build -t $(PHP_APPLICATION_IMAGE) -f $(PHP_APPLICATION_IMAGE_FILE) $(DOCKER_BUILD_CONTEXT_DIR)
 
-application_up: application_build
-	docker run --name $(APPLICATION_CONTAINER) -h $(APPLICATION_CONTAINER) --network $(PLATFORM_NETWORK) -v $(LOCAL_COMPOSER_HOME_DIR):$(CONTAINER_COMPOSER_HOME_DIR) -v $(APPLICATION_LOCAL_DIR):/application -p $(APPLICATION_EXPOSE_PORT):$(APPLICATION_PORT) -d $(APPLICATION_IMAGE)
-	docker exec --user $(USER_ID):$(GROUP_ID) $(APPLICATION_CONTAINER) composer install -n
+php_application_up: php_application_build
+	docker run --name $(PHP_APPLICATION_CONTAINER) -h $(PHP_APPLICATION_CONTAINER) --network $(PLATFORM_NETWORK) -v $(LOCAL_COMPOSER_HOME_DIR):$(CONTAINER_COMPOSER_HOME_DIR) -v $(PHP_APPLICATION_LOCAL_DIR):/php-application -p $(PHP_APPLICATION_EXPOSE_PORT):$(PHP_APPLICATION_PORT) -d $(PHP_APPLICATION_IMAGE)
+	docker exec --user $(USER_ID):$(GROUP_ID) $(PHP_APPLICATION_CONTAINER) composer install -n
 
-test_application:
-	docker exec --user $(USER_ID):$(GROUP_ID) $(APPLICATION_CONTAINER) composer test-ci
+test_php_application:
+	docker exec --user $(USER_ID):$(GROUP_ID) $(PHP_APPLICATION_CONTAINER) composer test-ci
 
-application_down:
-	-docker rm -f $(APPLICATION_CONTAINER)
-
-ssh_key_gen:
-	-echo N | ssh-keygen -q -t rsa -N "" -f ansible-deployment/inventories/keys/id_rsa
+php_application_down:
+	-docker rm -f $(PHP_APPLICATION_CONTAINER)
 
 test_host_build:
 	docker build --build-arg PHP_APPLICATION_SSH_KEY_RAW='$(PHP_APPLICATION_SSH_KEY_RAW)' -t $(TEST_HOST_IMAGE) -f $(TEST_HOST_IMAGE_FILE) $(DOCKER_BUILD_CONTEXT_DIR)
-
-test_host_up: SSH_KEY=`cat ansible-deployment/inventories/keys/id_rsa.pub`
 
 test_host_up: test_host_build
 	docker run --name $(TEST_HOST_CONTAINER) -h $(TEST_HOST_CONTAINER) --network $(PLATFORM_NETWORK) -p $(TEST_HOST_EXPOSE_PORT_1):$(TEST_HOST_PORT_1) -p $(TEST_HOST_EXPOSE_PORT_2):$(TEST_HOST_PORT_2) -d $(TEST_HOST_IMAGE)
@@ -93,12 +88,12 @@ build_package:
 	mkdir -p $(REPOSITORY_DIR)
 	mkdir -p $(PACKAGE_DIR)
 	git clone --depth 1 $(REPOSITORY_URL) $(REPOSITORY_DIR)
-	tar --exclude-vcs --directory $(REPOSITORY_DIR)/application -czf $(PACKAGE_DIR)/application.tar.gz .
+	tar --exclude-vcs --directory $(REPOSITORY_DIR)/php-application -czf $(PACKAGE_DIR)/php-application.tar.gz .
 
 deploy: build_package
 	ansible-playbook -i '$(PHP_APPLICATION_HOST),' -u $(PHP_APPLICATION_HOST_USER) --key-file=$(PHP_APPLICATION_HOST_SSH_KEY_PRIVATE) ansible-deployment/deployment.yml --ssh-common-args="-o StrictHostKeyChecking=no -o BatchMode=yes"
 
-test_deployment: \
+test_ansible_deployment: \
 	deploy
 
 run_stress_test:
@@ -107,17 +102,17 @@ run_stress_test:
 platform_up: \
 	network_up \
 	cache_up \
-	application_up \
+	php_application_up \
 	test_host_up
 
 platform_down: \
 	cache_down \
-	application_down \
+	php_application_down \
 	test_host_down \
 	network_down
 
 test: \
 	platform_up \
-	test_application \
-	test_deployment \
+	test_php_application \
+	test_ansible_deployment \
 	platform_down \

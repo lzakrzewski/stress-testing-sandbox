@@ -10,7 +10,7 @@ RUN mkdir --parent /usr/src/composer && \
     php -r "unlink('composer-setup.php');" &&\
     mv composer.phar /usr/bin/composer
 
-WORKDIR /application
+WORKDIR /php-application
 
 ENV COMPOSER_HOME /tmp/.composer
 

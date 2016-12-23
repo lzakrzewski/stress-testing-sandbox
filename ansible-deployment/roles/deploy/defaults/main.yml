@@ -1,4 +1,4 @@
 ---
-release_dir: "/srv/application"
+release_dir: "/srv/php-application"
 public_dir: "{{ release_dir }}/web"
-app_name: application
+app_name: php-application
