@@ -20,8 +20,8 @@ PHP_APPLICATION_SSH_KEY_RAW = $(shell cat $(PHP_APPLICATION_HOST_SSH_KEY_PUBLIC)
 APPLICATION_CONTAINER   = application
 APPLICATION_IMAGE       = application
 APPLICATION_IMAGE_FILE  = docker-containerization/application_ubuntu_16_04.dockerfile
-APPLICATION_PORT        = 8000
-APPLICATION_EXPOSE_PORT = 8000
+APPLICATION_PORT        = 8001
+APPLICATION_EXPOSE_PORT = 8001
 APPLICATION_LOCAL_DIR   = $(ROOT_DIR)/application
 
 TEST_HOST_CONTAINER     = test-host
@@ -67,6 +67,9 @@ application_up: application_build
 	docker run --name $(APPLICATION_CONTAINER) -h $(APPLICATION_CONTAINER) --network $(PLATFORM_NETWORK) -v $(LOCAL_COMPOSER_HOME_DIR):$(CONTAINER_COMPOSER_HOME_DIR) -v $(APPLICATION_LOCAL_DIR):/application -p $(APPLICATION_EXPOSE_PORT):$(APPLICATION_PORT) -d $(APPLICATION_IMAGE)
 	docker exec --user $(USER_ID):$(GROUP_ID) $(APPLICATION_CONTAINER) composer install -n
 
+test_application:
+	docker exec --user $(USER_ID):$(GROUP_ID) $(APPLICATION_CONTAINER) composer test-ci
+
 application_down:
 	-docker rm -f $(APPLICATION_CONTAINER)
 
@@ -92,38 +95,29 @@ build_package:
 	git clone --depth 1 $(REPOSITORY_URL) $(REPOSITORY_DIR)
 	tar --exclude-vcs --directory $(REPOSITORY_DIR)/application -czf $(PACKAGE_DIR)/application.tar.gz .
 
-test_application:
-	docker exec --user $(USER_ID):$(GROUP_ID) $(APPLICATION_CONTAINER) composer test-ci
-
 deploy: build_package
 	ansible-playbook -i '$(PHP_APPLICATION_HOST),' -u $(PHP_APPLICATION_HOST_USER) --key-file=$(PHP_APPLICATION_HOST_SSH_KEY_PRIVATE) ansible-deployment/deployment.yml --ssh-common-args="-o StrictHostKeyChecking=no -o BatchMode=yes"
+
+test_deployment: \
+	deploy
 
 run_stress_test:
 	docker run --net="host" -it --rm --name $(STRESS_TESTS_CONTAINER) -v $(STRESS_TESTS_LOCAL_CONF):$(STRESS_TESTS_CONTAINER_CONF) -v $(STRESS_TESTS_LOCAL_USER_FILES):$(STRESS_TESTS_CONTAINER_USER_FILES) -v $(STRESS_TESTS_LOCAL_RESULTS):$(STRESS_TESTS_CONTAINER_RESULTS) $(STRESS_TESTS_IMAGE) -s $(STRESS_TESTS_SIMULATION)
 
-test_infrastructure_up: \
-	network_up \
-	cache_up \
-	test_host_up
-
-test_infrastructure_down: \
-	cache_down \
-	test_host_down \
-	network_down
-
 platform_up: \
 	network_up \
 	cache_up \
-	application_up
+	application_up \
+	test_host_up
 
 platform_down: \
 	cache_down \
 	application_down \
+	test_host_down \
 	network_down
 
 test: \
-	network_up \
-	cache_up \
-	test_host_up \
-	deploy \
-	test_infrastructure_down
+	platform_up \
+	test_application \
+	test_deployment \
+	platform_down \
