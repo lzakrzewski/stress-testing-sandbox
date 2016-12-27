@@ -1,3 +1,1 @@
-ansible-deployment/inventories/keys
-ansible-deployment/build
 config/config.makefile

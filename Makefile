@@ -14,6 +14,8 @@ CACHE_CONTAINER   = cache
 CACHE_PORT        = 6379
 CACHE_EXPOSE_PORT = 6379
 
+APPLICATION_URL ?= http://$(PHP_APPLICATION_HOST)
+
 PHP_APPLICATION_HOST_SSH_KEY_PUBLIC  = $(PHP_APPLICATION_HOST_SSH_KEY).pub
 PHP_APPLICATION_HOST_SSH_KEY_PRIVATE = $(PHP_APPLICATION_HOST_SSH_KEY)
 PHP_APPLICATION_SSH_KEY_RAW          = $(shell cat $(PHP_APPLICATION_HOST_SSH_KEY_PUBLIC))
@@ -24,6 +26,9 @@ PHP_APPLICATION_PORT                 = 8001
 PHP_APPLICATION_EXPOSE_PORT          = 8001
 PHP_APPLICATION_LOCAL_DIR            = $(ROOT_DIR)/php-application
 
+REDIS_CACHE_HOST_SSH_KEY_PUBLIC  = $(REDIS_CACHE_HOST_SSH_KEY).pub
+REDIS_CACHE_HOST_SSH_KEY_PRIVATE = $(REDIS_CACHE_HOST_SSH_KEY)
+
 TEST_HOST_CONTAINER     = test-host
 TEST_HOST_IMAGE         = test-host
 TEST_HOST_IMAGE_FILE    = docker-containerization/test_host_ubuntu_16_04.dockerfile
@@ -32,16 +37,16 @@ TEST_HOST_EXPOSE_PORT_1 = 22
 TEST_HOST_PORT_2        = 80
 TEST_HOST_EXPOSE_PORT_2 = 8000
 
-GATLING_STRESS_TESTS_CONTAINER            = gatling-stress-testing
-GATLING_STRESS_TESTS_IMAGE                = denvazh/gatling
-GATLING_STRESS_TESTS_LOCAL_DIR            = $(ROOT_DIR)/gatling-stress-testing
-GATLING_STRESS_TESTS_LOCAL_CONF           = $(GATLING_STRESS_TESTS_LOCAL_DIR)/conf
-GATLING_STRESS_TESTS_CONTAINER_CONF       = /opt/gatling/conf
-GATLING_STRESS_TESTS_LOCAL_USER_FILES     = $(GATLING_STRESS_TESTS_LOCAL_DIR)/user-files
-GATLING_STRESS_TESTS_CONTAINER_USER_FILES = /opt/gatling/user-files
-GATLING_STRESS_TESTS_LOCAL_RESULTS        = $(GATLING_STRESS_TESTS_LOCAL_DIR)/results
-GATLING_STRESS_TESTS_CONTAINER_RESULTS    = /opt/gatling/results
-GATLING_STRESS_TESTS_SIMULATION           = wall.PublishPostSimulation
+GATLING_STRESS_TESTING_CONTAINER            = gatling-stress-testing
+GATLING_STRESS_TESTING_IMAGE                = denvazh/gatling
+GATLING_STRESS_TESTING_LOCAL_DIR            = $(ROOT_DIR)/gatling-stress-testing
+GATLING_STRESS_TESTING_LOCAL_CONF           = $(GATLING_STRESS_TESTING_LOCAL_DIR)/conf
+GATLING_STRESS_TESTING_CONTAINER_CONF       = /opt/gatling/conf
+GATLING_STRESS_TESTING_LOCAL_USER_FILES     = $(GATLING_STRESS_TESTING_LOCAL_DIR)/user-files
+GATLING_STRESS_TESTING_CONTAINER_USER_FILES = /opt/gatling/user-files
+GATLING_STRESS_TESTING_LOCAL_RESULTS        = $(GATLING_STRESS_TESTING_LOCAL_DIR)/results
+GATLING_STRESS_TESTING_CONTAINER_RESULTS    = /opt/gatling/results
+GATLING_STRESS_TESTING_SIMULATION           = wall.PublishPostSimulation
 
 BUILD_DIR      = ansible-deployment/build
 REPOSITORY_DIR = $(BUILD_DIR)/repository
@@ -91,10 +96,10 @@ build_package:
 	tar --exclude-vcs --directory $(REPOSITORY_DIR)/php-application -czf $(PACKAGE_DIR)/php-application.tar.gz .
 
 deploy_php_application: build_package
-	ansible-playbook -i '$(PHP_APPLICATION_HOST),' -u $(PHP_APPLICATION_HOST_USER) --key-file=$(PHP_APPLICATION_HOST_SSH_KEY_PRIVATE) ansible-deployment/php-application-deployment.yml --ssh-common-args="-o StrictHostKeyChecking=no -o BatchMode=yes"
+	ansible-playbook -i '$(PHP_APPLICATION_HOST),' -u $(PHP_APPLICATION_HOST_USER) --key-file=$(PHP_APPLICATION_HOST_SSH_KEY_PRIVATE) ansible-deployment/php-application-deployment.yml -e REDIS_CACHE_HOST=$(REDIS_CACHE_HOST) --ssh-common-args="-o StrictHostKeyChecking=no -o BatchMode=yes"
 
 deploy_redis_cache:
-	ansible-playbook -i '$(PHP_APPLICATION_HOST),' -u $(PHP_APPLICATION_HOST_USER) --key-file=$(PHP_APPLICATION_HOST_SSH_KEY_PRIVATE) ansible-deployment/redis-cache-deployment.yml --ssh-common-args="-o StrictHostKeyChecking=no -o BatchMode=yes"
+	ansible-playbook -i '$(REDIS_CACHE_HOST),' -u $(REDIS_CACHE_HOST_USER) --key-file=$(REDIS_CACHE_HOST_SSH_KEY_PRIVATE) ansible-deployment/redis-cache-deployment.yml --ssh-common-args="-o StrictHostKeyChecking=no -o BatchMode=yes"
 
 deploy: \
 	deploy_php_application \
@@ -104,7 +109,7 @@ test_ansible_deployment: \
 	deploy
 
 run_stress_test:
-	docker run --net="host" -it --rm --name $(GATLING_STRESS_TESTS_CONTAINER) -v $(GATLING_STRESS_TESTS_LOCAL_CONF):$(GATLING_STRESS_TESTS_CONTAINER_CONF) -v $(GATLING_STRESS_TESTS_LOCAL_USER_FILES):$(GATLING_STRESS_TESTS_CONTAINER_USER_FILES) -v $(GATLING_STRESS_TESTS_LOCAL_RESULTS):$(GATLING_STRESS_TESTS_CONTAINER_RESULTS) $(GATLING_STRESS_TESTS_IMAGE) -s $(GATLING_STRESS_TESTS_SIMULATION)
+	docker run --net="host" -it --rm --name $(GATLING_STRESS_TESTING_CONTAINER) -e APPLICATION_URL=$(APPLICATION_URL) -e USERS_LOW=$(GATLING_STRESS_TESTING_USER_LOW) -e USERS_HIGH=$(GATLING_STRESS_TESTING_USER_HIGH) -v $(GATLING_STRESS_TESTING_LOCAL_CONF):$(GATLING_STRESS_TESTING_CONTAINER_CONF) -v $(GATLING_STRESS_TESTING_LOCAL_USER_FILES):$(GATLING_STRESS_TESTING_CONTAINER_USER_FILES) -v $(GATLING_STRESS_TESTING_LOCAL_RESULTS):$(GATLING_STRESS_TESTING_CONTAINER_RESULTS) $(GATLING_STRESS_TESTING_IMAGE) -s $(GATLING_STRESS_TESTING_SIMULATION)
 
 test_gatling_stress_testing: \
 	run_stress_test

@@ -2,5 +2,5 @@
 release_dir: "/srv/php-application"
 public_dir: "{{ release_dir }}/web"
 app_name: php-application
-redis_cache_host: 127.0.0.1
-redis_cache_port: 6379
+REDIS_CACHE_HOST: "{{ REDIS_CACHE_HOST }}"
+REDIS_CACHE_PORT: 6379
