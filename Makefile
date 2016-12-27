@@ -96,7 +96,7 @@ build_package:
 	tar --exclude-vcs --directory $(REPOSITORY_DIR)/php-application -czf $(PACKAGE_DIR)/php-application.tar.gz .
 
 deploy_php_application: build_package
-	ansible-playbook -i '$(PHP_APPLICATION_HOST),' -u $(PHP_APPLICATION_HOST_USER) --key-file=$(PHP_APPLICATION_HOST_SSH_KEY_PRIVATE) ansible-deployment/php-application-deployment.yml -e REDIS_CACHE_HOST=$(REDIS_CACHE_HOST) --ssh-common-args="-o StrictHostKeyChecking=no -o BatchMode=yes"
+	ansible-playbook -i '$(PHP_APPLICATION_HOST),' -u $(PHP_APPLICATION_HOST_USER) --key-file=$(PHP_APPLICATION_HOST_SSH_KEY_PRIVATE) ansible-deployment/php-application-deployment.yml -e CACHE_HOST=$(PHP_APPLICATION_CACHE_HOST) --ssh-common-args="-o StrictHostKeyChecking=no -o BatchMode=yes"
 
 deploy_redis_cache:
 	ansible-playbook -i '$(REDIS_CACHE_HOST),' -u $(REDIS_CACHE_HOST_USER) --key-file=$(REDIS_CACHE_HOST_SSH_KEY_PRIVATE) ansible-deployment/redis-cache-deployment.yml --ssh-common-args="-o StrictHostKeyChecking=no -o BatchMode=yes"
