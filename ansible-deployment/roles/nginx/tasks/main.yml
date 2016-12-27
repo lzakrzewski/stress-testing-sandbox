@@ -2,6 +2,11 @@
   - name: Installs nginx web server
     apt: pkg=nginx state=installed update_cache=true
 
+  - name: Clean sites-available directory
+    file:
+      state: absent
+      path: "/etc/nginx/sites-available/"
+
   - name: Configure nginx web server
     template:
       src: "nginx.j2"

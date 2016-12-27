@@ -1,0 +1,6 @@
+---
+  - name: Install redis
+    apt: name=redis-server state=present
+    become_user: yes
+    notify:
+      - start redis

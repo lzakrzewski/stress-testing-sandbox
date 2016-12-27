@@ -1,5 +1,5 @@
 ---
-  - name: Install php and extensions
+  - name: Install PHP and extensions
     apt: name={{ item }} state=present
     become_user: yes
     with_items:

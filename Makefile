@@ -90,8 +90,15 @@ build_package:
 	git clone --depth 1 $(REPOSITORY_URL) $(REPOSITORY_DIR)
 	tar --exclude-vcs --directory $(REPOSITORY_DIR)/php-application -czf $(PACKAGE_DIR)/php-application.tar.gz .
 
-deploy: build_package
-	ansible-playbook -i '$(PHP_APPLICATION_HOST),' -u $(PHP_APPLICATION_HOST_USER) --key-file=$(PHP_APPLICATION_HOST_SSH_KEY_PRIVATE) ansible-deployment/deployment.yml --ssh-common-args="-o StrictHostKeyChecking=no -o BatchMode=yes"
+deploy_php_application: build_package
+	ansible-playbook -i '$(PHP_APPLICATION_HOST),' -u $(PHP_APPLICATION_HOST_USER) --key-file=$(PHP_APPLICATION_HOST_SSH_KEY_PRIVATE) ansible-deployment/php-application-deployment.yml --ssh-common-args="-o StrictHostKeyChecking=no -o BatchMode=yes"
+
+deploy_redis_cache:
+	ansible-playbook -i '$(PHP_APPLICATION_HOST),' -u $(PHP_APPLICATION_HOST_USER) --key-file=$(PHP_APPLICATION_HOST_SSH_KEY_PRIVATE) ansible-deployment/redis-cache-deployment.yml --ssh-common-args="-o StrictHostKeyChecking=no -o BatchMode=yes"
+
+deploy: \
+	deploy_php_application \
+	deploy_redis_cache
 
 test_ansible_deployment: \
 	deploy

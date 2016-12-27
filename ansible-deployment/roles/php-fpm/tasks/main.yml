@@ -1,5 +1,5 @@
 ---
-  - name: Install required software
+  - name: Install PHP-FPM
     apt: name=php7.0-fpm state=present
     become_user: yes
     notify:
