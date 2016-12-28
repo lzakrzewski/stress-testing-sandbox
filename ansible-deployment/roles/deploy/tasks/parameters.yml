@@ -1,5 +1,5 @@
 ---
   - name: Update parameters
     template:
-      src: "parameters.j2"
+      src: "parameters.yml"
       dest: "{{ release_dir }}/config/parameters.yml"
