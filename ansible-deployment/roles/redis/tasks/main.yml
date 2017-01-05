@@ -1,6 +1,11 @@
 ---
-  - name: Install redis
+  - name: Install Redis
     apt: name=redis-server state=present
     become_user: yes
+
+  - name: Redis configuraton
+    template:
+      src: "redis.conf"
+      dest: "/etc/redis/redis.conf"
     notify:
       - start redis
