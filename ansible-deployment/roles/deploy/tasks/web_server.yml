@@ -1,13 +1,13 @@
 ---
-  - name: Reload nginx
+  - name: Restart nginx
     service:
       name: nginx
-      state: reloaded
+      state: restarted
 
-  - name: Reload PHP-FPM
+  - name: Restart PHP-FPM
     service:
       name: php7.0-fpm
-      state: reloaded
+      state: restarted
 
   - name: Ensure PHP-FPM sockets stats
     stat:

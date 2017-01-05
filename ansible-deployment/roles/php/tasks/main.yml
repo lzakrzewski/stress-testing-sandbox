@@ -1,9 +1,11 @@
 ---
-  - name: Ensure PHP packages repository
-    apt_repository:
-      repo: "ppa:ondrej/php"
-      state: present
-    when: ansible_distribution_version == "14.04"
+  - name: Install packages on Ubuntu
+    include: php_package_ubuntu.yml
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Install packages on Debian
+    include: php_package_debian.yml
+    when: ansible_distribution == "Debian"
 
   - name: Ensure APT cache
     apt:

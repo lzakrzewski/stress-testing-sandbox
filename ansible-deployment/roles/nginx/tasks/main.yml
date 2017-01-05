@@ -1,4 +1,12 @@
 ---
+  - name: Uninstall apache packages
+    apt: >
+      pkg=apache2*
+      state=absent
+      purge=yes
+      force=yes
+    become_user: yes
+
   - name: Installs nginx web server
     apt: pkg=nginx state=installed update_cache=true
 
