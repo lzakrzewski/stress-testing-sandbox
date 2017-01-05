@@ -16,3 +16,7 @@
       pool_name: "{{ item.name }}"
       listen: "{{ item.listen }}"
     with_items: "{{ fpm_pools }}"
+    notify:
+      - start php-fpm
+
+  - meta: flush_handlers

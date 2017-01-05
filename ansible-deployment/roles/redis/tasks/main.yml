@@ -2,10 +2,17 @@
   - name: Install Redis
     apt: name=redis-server state=present
     become_user: yes
+    notify:
+      - start redis
+
+  - meta: flush_handlers
 
   - name: Redis configuraton
     template:
       src: "redis.conf"
       dest: "/etc/redis/redis.conf"
-    notify:
-      - start redis
+
+  - name: Restart Redis
+    service:
+      name: redis-server
+      state: restarted
