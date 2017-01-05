@@ -1,4 +1,14 @@
 ---
+  - name: Ensure PHP packages repository
+    apt_repository:
+      repo: "ppa:ondrej/php"
+      state: present
+    when: ansible_distribution_version == "14.04"
+
+  - name: Ensure APT cache
+    apt:
+      update_cache: yes
+
   - name: Install PHP and extensions
     apt: name={{ item }} state=present
     become_user: yes
