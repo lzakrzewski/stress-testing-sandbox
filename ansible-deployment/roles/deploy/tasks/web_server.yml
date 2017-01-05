@@ -1,6 +1,26 @@
 ---
-  - name: Prepare web server
-    shell: echo "Successfully deployed."
-    notify:
-      - reload nginx
-      - reload php-fpm
+  - name: Reload nginx
+    service:
+      name: nginx
+      state: reloaded
+
+  - name: Reload PHP-FPM
+    service:
+      name: php7.0-fpm
+      state: reloaded
+
+  - name: Ensure PHP-FPM sockets stats
+    stat:
+      path: "{{ item.listen }}"
+    register: php_fpm_sockets_stats
+    with_items: "{{ fpm_pools }}"
+
+  - name: Ensure PHP-FPM sockets exist
+    fail:
+      msg: "{{ item.item.listen is not a socket }}"
+    when: not item.stat.issock
+    with_items: "{{ php_fpm_sockets_stats.results }}"
+
+  - name: Web server is ready
+    debug:
+      msg: "Successfully deployed, Web server is ready."

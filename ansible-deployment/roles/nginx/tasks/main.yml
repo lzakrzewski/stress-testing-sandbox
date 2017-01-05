@@ -16,7 +16,3 @@
     template:
       src: "nginx.conf"
       dest: "/etc/nginx/nginx.conf"
-    notify:
-      - start nginx
-      - ensure PHP-FPM sockets stats
-      - ensure PHP-FPM sockets exist
