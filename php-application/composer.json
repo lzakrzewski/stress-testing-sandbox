@@ -1,6 +1,6 @@
 {
-    "name": "lukasz/aws-stress-test",
-    "description": "Repository to compare a performance of different AWS instances",
+    "name": "lukasz/stress-testing-sandbox",
+    "description": "Repository to compare a performance of different instances",
     "type": "project",
     "license": "MIT",
     "authors": [

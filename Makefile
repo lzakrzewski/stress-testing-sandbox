@@ -52,7 +52,7 @@ GATLING_STRESS_TESTING_DURATION             ?= 10
 
 BUILD_DIR      = ansible-deployment/build
 REPOSITORY_DIR = $(BUILD_DIR)/repository
-REPOSITORY_URL = https://github.com/lzakrzewski/aws-stress-test.git
+REPOSITORY_URL = https://github.com/lzakrzewski/stress-testing-sandbox.git
 PACKAGE_DIR    = $(BUILD_DIR)/package
 
 network_up:
