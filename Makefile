@@ -2,8 +2,7 @@ ROOT_DIR ?= $(PWD)
 USER_ID   = $(shell id -u)
 GROUP_ID  = $(shell id -g)
 
-include $(ROOT_DIR)/config/config.makefile.dist
--include $(ROOT_DIR)/config/config.makefile
+include $(ROOT_DIR)/config/config.makefile
 
 DOCKER_BUILD_CONTEXT_DIR    = docker-containerization
 PLATFORM_NETWORK            = platform_network
@@ -47,6 +46,9 @@ GATLING_STRESS_TESTING_CONTAINER_USER_FILES = /opt/gatling/user-files
 GATLING_STRESS_TESTING_LOCAL_RESULTS        = $(GATLING_STRESS_TESTING_LOCAL_DIR)/results
 GATLING_STRESS_TESTING_CONTAINER_RESULTS    = /opt/gatling/results
 GATLING_STRESS_TESTING_SIMULATION           = wall.PublishPostSimulation
+GATLING_STRESS_TESTING_USER_LOW             ?= 1
+GATLING_STRESS_TESTING_USER_HIGH            ?= 10
+GATLING_STRESS_TESTING_DURATION             ?= 10
 
 BUILD_DIR      = ansible-deployment/build
 REPOSITORY_DIR = $(BUILD_DIR)/repository
