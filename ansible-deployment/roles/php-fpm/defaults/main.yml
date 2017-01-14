@@ -33,7 +33,7 @@ fpm_pools:
     listen: "{{ fpm_socket_dir }}/php-fpm-{{ app_name }}-10.socket"
 
 pm: static
-pm_max_children: 32
+pm_max_children: "{{ ((ansible_memfree_mb * 0.8)/300) | int + 1 }}"
 pm_start_servers: 4
 pm_min_spare_servers: 4
 pm_max_spare_servers: 8
