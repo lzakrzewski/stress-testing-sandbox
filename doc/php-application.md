@@ -1,6 +1,6 @@
 # PHP application
 
-`php-application` is pretty simple written in `PHP7` and with `redis-cache` as a storage. It simulates wall with posts.
+`php-application` is a pretty simple application written in `PHP7` and with `redis-cache` as a storage. It simulates wall with posts.
 It has framework agnostic model. It uses `CQRS` with `SimpleBus` for handling commands.
 With `php-application` you can:
 - render the wall with posts

@@ -1,6 +1,6 @@
 {
     "name": "lukasz/stress-testing-sandbox",
-    "description": "Repository to compare a performance of different instances",
+    "description": "Repository to compare a different infrastructure setup",
     "type": "project",
     "license": "MIT",
     "authors": [
