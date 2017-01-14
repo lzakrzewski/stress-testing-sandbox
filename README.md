@@ -1,17 +1,22 @@
-# Installation [![Build Status](https://travis-ci.org/lzakrzewski/stress-testing-sandbox.svg?branch=master)](https://travis-ci.org/lzakrzewski/stress-testing-sandbox)
+# Stress testing sandbox
+[![Build Status](https://travis-ci.org/lzakrzewski/stress-testing-sandbox.svg?branch=master)](https://travis-ci.org/lzakrzewski/stress-testing-sandbox)
 
 ## Know-how
-This repository is a simple sandbox which can be used to quickly compare multiple infrastructure setup. See [results](doc/results.md).
+This repository is a simple sandbox which can be used to quickly compare multiple infrastructure setup.
 
-With `stress-testing-sandbox` you can:
- - `provision` your host (hosts) to install required dependencies (`Ansible`)
- - `deploy` [php-application](doc/php-application.md) to your host (`Ansible`)
- - execute `stress-test` to check how high load can handle your infrastructure (`Gatling`)
+With **stress-testing-sandbox** you can:
+ - `provision` your host (hosts) to install all required dependencies with [Ansible](http://docs.ansible.com/ansible/intro_getting_started.html)
+ - `deploy` [php-application](doc/php-application.md) to your host with [Ansible](http://docs.ansible.com/ansible/intro_getting_started.html)
+ - execute `stress-test` to check how high load can handle your infrastructure with [Gatling](http://gatling.io/)
 
 [Php-application](doc/php-application.md) is just simple wall with posts. It's written with `PHP-7` and it uses `redis-cache` as a storage.
-[php-application](doc/php-application.md) with `redis-cache` can work on single instance or on separate instances (it depends on configuration).
+[Php-application](doc/php-application.md) with `redis-cache` can work on single instance or on separate instances (it depends on [configuration](doc/advanced-configuration.md)).
 
-Read more about [php-application](doc/php-application.md).
+#### Read more:
+- [Php application reference](doc/php-application.md)
+- [Results of stress testing](doc/results.md)
+
+You can fork this and adjust to your project or just have some fun with `provisioning`, `deployment` and `stress-testing`.
 
 ## Local machine requirements
 - [Make](https://www.gnu.org/software/make/manual/make.html)
@@ -25,55 +30,63 @@ Read more about [php-application](doc/php-application.md).
 - Ubuntu 14.04, 16.04 or debian `jessie`
 - Python installed (because of `Ansible`)
 
-## Installation & Configuration
-1. Clone repository:
-    ```
-    git clone git@github.com:lzakrzewski/stress-testing-sandbox.git
-    ```
-2. Go to project directory:
-    ```
-    cd stress-testing-sandbox
-    ```
-3. Create configuration file with make syntax:
-```make
-PHP_APPLICATION_HOST         = 255.255.255.1 #host1 address
-PHP_APPLICATION_HOST_USER    = root #host1 user to log in with ssh
-PHP_APPLICATION_HOST_SSH_KEY = ~/.ssh/id_rsa #path to private ssh key
-PHP_APPLICATION_CACHE_HOST   = 127.0.0.1 #redis cache address in private network
+## Installation & configuration
+1. Clone repository:  
+`git clone git@github.com:lzakrzewski/stress-testing-sandbox.git`
+2. Go to project directory:  
+`cd stress-testing-sandbox`
+3. Create configuration file with **make** syntax:
 
-REDIS_CACHE_HOST         = 255.255.255.1 #host2 address
-REDIS_CACHE_HOST_USER    = root #host2 user
+```make
+PHP_APPLICATION_HOST         = 111.111.111.111 #address of host with php application deployed
+PHP_APPLICATION_HOST_USER    = root #user to log in with ssh
+PHP_APPLICATION_HOST_SSH_KEY = ~/.ssh/id_rsa #path to private ssh key
+PHP_APPLICATION_CACHE_HOST   = 125.125.0.1 #redis-cache address in private network
+
+REDIS_CACHE_HOST         = 222.222.222.222 #address of host with redis cache
+REDIS_CACHE_HOST_USER    = root #user to log in with ssh
 REDIS_CACHE_HOST_SSH_KEY = ~/.ssh/id_rsa #path to private ssh key
 ```
+
 and save it here: `config/config.makefile`
 
-In case when application should be deployed to only one host then configuration for `#host1` and `#host2` can be the same.
+In case when application should be deployed to only one host then configuration for `PHP_APPLICATION_HOST` and `REDIS_CACHE_HOST` can be the same.
 **See more:** [Advanced configuration](doc/advanced-configuration.md)
 
 ## Deployment and Provisioning
-`make deploy` - as first it install required dependencies on your host (`provisioning`) and then it `deploys` a `php-application`.
-Depending on configuration it can provision single or two instances. `make deploy` is just an abstraction for [ansible-playbook](http://docs.ansible.com/ansible/playbooks.html) command.
+**Deployment** and **provisioning** was built in with [ansible-playbook](http://docs.ansible.com/ansible/playbooks.html) command.
+Script at first installs all required dependencies on your host(s) (`provisioning`) and then it `deploys` a `php-application`.
+
+Here is a **make** target which runs [ansible-playbook](http://docs.ansible.com/ansible/playbooks.html) using configuration from **config/config.makefile**:  
+`make deploy`
 
 ## Stress testing
-`make run_stress_test` - this command performs stress test on your infrastructure.
+`make run_stress_test` - performs stress test on your infrastructure.
 
- Stress test scenario:
-  - Render wall with posts
-  - Publish a post on the wall
+Stress test scenario:
+- Render wall with posts
+- Publish a post on the wall
 
 As default it ramps from 1 request per second to 100 requests per second during 100 seconds.
-Executing stress test requires fast internet connection. It's great idea to run `make run_stress_test` from machine in same networking like host with `php-application` and `redis-cache` .
+Executing of stress test requires fast internet connection.
+**Notice** It's great idea to run `make run_stress_test` from machine in same networking like host with `php-application` and `redis-cache` .
 
-See the `gatling` simulation scenario:
+See the `gatling` [simulation scenario](gatling-stress-testing/user-files/simulations/PublishPostSimulation.scala):
 
-## Results of stress testing
+#### Stress test result:
+
+![](doc/results/req-per-sec/1x-1-CPU-2GB-16.04-50-50.png)
 
 **See more:** [results](doc/results.md)
 
 ## Examples
 
+#### Application provisioning & deployment:
+
 ![](doc/screenshots/screenshot-0.png)
+
+#### Working application:
 
 ![](doc/screenshots/screenshot-1.png)
 
-![](doc/results/req-per-sec/1x-1-CPU-2GB-16.04-50-50.png)
+
