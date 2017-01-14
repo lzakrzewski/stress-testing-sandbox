@@ -1,17 +1,17 @@
 # Installation [![Build Status](https://travis-ci.org/lzakrzewski/stress-testing-sandbox.svg?branch=master)](https://travis-ci.org/lzakrzewski/stress-testing-sandbox)
 
 ## Know-how
-This repository is a simple sandbox which can be used to quickly compare multiple infrastructure setup.
+This repository is a simple sandbox which can be used to quickly compare multiple infrastructure setup. See [results](doc/results.md).
 
 With `stress-testing-sandbox` you can:
  - `provision` your host (hosts) to install required dependencies (`Ansible`)
  - `deploy` [php-application](doc/php-application.md) to your host (`Ansible`)
- - execute `stress-test` to check how traffic can handle your infrastructure (`Gatling`)
+ - execute `stress-test` to check how high load can handle your infrastructure (`Gatling`)
 
-`php-application` is just simple wall with posts. It's written with `PHP-7` and it uses `redis-cache` as a storage.
-`php-application` with `redis-cache` can work on single instance or on separate instances (it depends on configuration).
+[Php-application](doc/php-application.md) is just simple wall with posts. It's written with `PHP-7` and it uses `redis-cache` as a storage.
+[php-application](doc/php-application.md) with `redis-cache` can work on single instance or on separate instances (it depends on configuration).
 
-Read more about [php-application](doc/php-application.md)
+Read more about [php-application](doc/php-application.md).
 
 ## Local machine requirements
 - [Make](https://www.gnu.org/software/make/manual/make.html)
@@ -22,7 +22,7 @@ Read more about [php-application](doc/php-application.md)
 
 ## Host requirements
 - SSH access
-- Debian `jessie` or ubuntu 14.04, 16.04
+- Ubuntu 14.04, 16.04 or debian `jessie`
 - Python installed (because of `Ansible`)
 
 ## Installation & Configuration
@@ -47,24 +47,33 @@ REDIS_CACHE_HOST_SSH_KEY = ~/.ssh/id_rsa #path to private ssh key
 ```
 and save it here: `config/config.makefile`
 
-In case when application should be deployed to only one host then configuration for #host1 and #host2 can be the same.
-See [Advanced configuration](doc/advanced-configuration.md)
+In case when application should be deployed to only one host then configuration for `#host1` and `#host2` can be the same.
+**See more:** [Advanced configuration](doc/advanced-configuration.md)
 
 ## Deployment and Provisioning
-`make deploy` - firstly installs required dependencies on your host (`provisioning`) and then it `deploys` a `php-application`.
+`make deploy` - as first it install required dependencies on your host (`provisioning`) and then it `deploys` a `php-application`.
 Depending on configuration it can provision single or two instances. `make deploy` is just an abstraction for [ansible-playbook](http://docs.ansible.com/ansible/playbooks.html) command.
 
- ## Stress testing
+## Stress testing
 `make run_stress_test` - this command performs stress test on your infrastructure.
 
  Stress test scenario:
-  - render wall with posts
-  - publish post
+  - Render wall with posts
+  - Publish a post on the wall
 
 As default it ramps from 1 request per second to 100 requests per second during 100 seconds.
 Executing stress test requires fast internet connection. It's great idea to run `make run_stress_test` from machine in same networking like host with `php-application` and `redis-cache` .
 
+See the `gatling` simulation scenario:
+
 ## Results of stress testing
 
-See more: [results](doc/results.md)
+**See more:** [results](doc/results.md)
 
+## Examples
+
+![](doc/screenshots/screenshot-0.png)
+
+![](doc/screenshots/screenshot-1.png)
+
+![](doc/results/rec-per-sec/1x-1-CPU-2GB-16.04-50-50.png)

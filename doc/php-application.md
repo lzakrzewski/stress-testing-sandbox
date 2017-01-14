@@ -35,4 +35,8 @@ Feature: Publish post
 
 ## Examples
 
-[some screenshot here]
+![](doc/screenshots/screenshot-1.png)
+
+![](doc/screenshots/screenshot-2.png)
+
+![](doc/screenshots/screenshot-3.png)
