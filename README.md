@@ -1,4 +1,4 @@
-# Installation
+# Installation [![Build Status](https://travis-ci.org/lzakrzewski/stress-testing-sandbox.svg?branch=master)](https://travis-ci.org/lzakrzewski/stress-testing-sandbox)
 
 ## Know-how
 This repository is a simple sandbox which can be used to quickly compare multiple infrastructure setup.
