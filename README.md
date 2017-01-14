@@ -76,4 +76,4 @@ See the `gatling` simulation scenario:
 
 ![](doc/screenshots/screenshot-1.png)
 
-![](doc/results/rec-per-sec/1x-1-CPU-2GB-16.04-50-50.png)
+![](doc/results/req-per-sec/1x-1-CPU-2GB-16.04-50-50.png)

@@ -33,7 +33,7 @@ Feature: Publish post
 - [Implementation](php-application/src)
 
 
-## Examples
+## Screenshots from working application
 
 ![](doc/screenshots/screenshot-1.png)
 
