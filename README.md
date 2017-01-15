@@ -9,9 +9,9 @@ This repository is a simple sandbox which can be used to quickly compare multipl
 With **stress-testing-sandbox** you can:
  - `provision` your host (hosts) to install all required dependencies with [Ansible](http://docs.ansible.com/ansible/intro_getting_started.html)
  - `deploy` [php-application](doc/php-application.md) to your host with [Ansible](http://docs.ansible.com/ansible/intro_getting_started.html)
- - execute `stress-test` to check how high load can handle your infrastructure with [Gatling](http://gatling.io/)
-
-[Php-application](doc/php-application.md) is a just simple wall with posts. It's written with `PHP-7` and it uses `redis-cache` as a storage.
+ - execute `stress-test` to check (with [Gatling](http://gatling.io/)) how high is the load that your infrastructure can handle
+ 
+[Php-application](doc/php-application.md) is just simple wall with posts. It's written with `PHP-7` and it uses `redis-cache` as storage.
 [Php-application](doc/php-application.md) with a `redis-cache` can work on a single instance or on separate instances (it depends on [configuration](doc/advanced-configuration.md)).
 
 #### Read more:
@@ -56,24 +56,24 @@ In the case when an application should be deployed to only one host then the con
 **See more:** [advanced configuration](doc/advanced-configuration.md)
 
 ## Deployment and Provisioning
-**Deployment** and **provisioning** were built in with [ansible-playbook](http://docs.ansible.com/ansible/playbooks.html) command.
+**Deployment** and **provisioning** were created with [ansible-playbook](http://docs.ansible.com/ansible/playbooks.html) command.
 The script at first installs all required dependencies on your host(s) (`provisioning`) and then it `deploys` a `php-application`.
 
 Here is a **make** target which runs [ansible-playbook](http://docs.ansible.com/ansible/playbooks.html) using the configuration from **config/config.makefile**:  
 `make deploy`
 
 ## Stress testing
-Stress testing was built in with [Gatling](http://gatling.io/).   
-The script runs stress tests the using configuration from **config/config.makefile**.  
+**Stress testing** was created with [Gatling](http://gatling.io/).   
+The script runs stress tests using the configuration from **config/config.makefile**.  
 `make run_stress_test`
 
 Stress test scenario:
 - Render wall with posts
 - Publish a post on the wall
 
-As default, it ramps from 1 request per second to 100 requests per second during 100 seconds. Those values can be set, see [configuration](doc/advanced-configuration.md)
+By default, it ramps from 1 request per second to 100 during 100 seconds. Those values can be set, see [configuration](doc/advanced-configuration.md).
 Executing of stress test requires a fast internet connection.    
-**Notice** It's a great idea to run `make run_stress_test` from machine in same networking like a host with `php-application` and `redis-cache` .
+**Notice** It's a great idea to run `make run_stress_test` from the machine on the same network as the `php-application` and `redis-cache` host.
 
 **See more:** [Gatling simulation scenario](gatling-stress-testing/user-files/simulations/PublishPostSimulation.scala).
 
