@@ -5,7 +5,7 @@
 This repository is a simple sandbox which can be used to quickly compare multiple infrastructure setup.
 
 
-#### Features
+#### Features:
 With **stress-testing-sandbox** you can:
  - `provision` your host (hosts) to install all required dependencies with [Ansible](http://docs.ansible.com/ansible/intro_getting_started.html)
  - `deploy` [php-application](doc/php-application.md) to your host with [Ansible](http://docs.ansible.com/ansible/intro_getting_started.html)
@@ -52,7 +52,7 @@ REDIS_CACHE_HOST_SSH_KEY = ~/.ssh/id_rsa #path to private ssh key
 
 and save it here: `config/config.makefile`
 
-In case when application should be deployed to only one host then configuration for `PHP_APPLICATION_HOST` and `REDIS_CACHE_HOST` can be the same.
+In case when application should be deployed to only one host then configuration for `PHP_APPLICATION_HOST` and `REDIS_CACHE_HOST` can be the same.      
 **See more:** [advanced configuration](doc/advanced-configuration.md)
 
 ## Deployment and Provisioning
@@ -72,7 +72,7 @@ Stress test scenario:
 - Publish a post on the wall
 
 As default it ramps from 1 request per second to 100 requests per second during 100 seconds. Those values can be set, see [configuration](doc/advanced-configuration.md)
-Executing of stress test requires fast internet connection.
+Executing of stress test requires fast internet connection.    
 **Notice** It's great idea to run `make run_stress_test` from machine in same networking like host with `php-application` and `redis-cache` .
 
 See the `gatling` [simulation scenario](gatling-stress-testing/user-files/simulations/PublishPostSimulation.scala):
@@ -81,7 +81,7 @@ See the `gatling` [simulation scenario](gatling-stress-testing/user-files/simula
 
 ![](doc/results/rps-thumbnails/1x-1-CPU-2GB-16.04-50-50.png)
 
-**See more:** [results](doc/results.md)
+**See more:** [results](doc/results.md).
 
 ## Examples
 
