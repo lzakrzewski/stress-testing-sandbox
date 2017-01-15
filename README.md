@@ -79,7 +79,7 @@ See the `gatling` [simulation scenario](gatling-stress-testing/user-files/simula
 
 #### Stress testing result:
 
-![](doc/results/req-per-sec/1x-1-CPU-2GB-16.04-50-50.png)
+![](doc/results/rps-thumbnails/1x-1-CPU-2GB-16.04-50-50.png)
 
 **See more:** [results](doc/results.md)
 
