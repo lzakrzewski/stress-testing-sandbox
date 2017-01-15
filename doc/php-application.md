@@ -1,13 +1,13 @@
 # PHP application
 
-`php-application` is a pretty simple application written in `PHP7` and with `redis-cache` as a storage. It simulates wall with posts.
+`Php-application` is a pretty simple application written in `PHP7` and with `redis-cache` as a storage. It simulates wall with posts.
 It has framework agnostic model. It uses `CQRS` with `SimpleBus` for handling commands.
 With `php-application` you can:
 - render the wall with posts
 - publish a post
 
 During each request (effect of triggered domain event `PostWasPublished`) application updates the projection with statistics.
-The statistics includes:
+The statistics include:
 - Total number of posts on the wall
 - Most active publisher
 - Most often used browser

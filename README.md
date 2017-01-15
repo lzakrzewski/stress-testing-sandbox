@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/lzakrzewski/stress-testing-sandbox.svg?branch=master)](https://travis-ci.org/lzakrzewski/stress-testing-sandbox)
 
 ## Know-how
-This repository is a simple sandbox which can be used to quickly compare multiple infrastructure setup.
+This repository is a simple sandbox which can be used to quickly compare multiple infrastructure setups.
 
 
 #### Features:
@@ -11,14 +11,14 @@ With **stress-testing-sandbox** you can:
  - `deploy` [php-application](doc/php-application.md) to your host with [Ansible](http://docs.ansible.com/ansible/intro_getting_started.html)
  - execute `stress-test` to check how high load can handle your infrastructure with [Gatling](http://gatling.io/)
 
-[Php-application](doc/php-application.md) is just simple wall with posts. It's written with `PHP-7` and it uses `redis-cache` as a storage.
-[Php-application](doc/php-application.md) with `redis-cache` can work on single instance or on separate instances (it depends on [configuration](doc/advanced-configuration.md)).
+[Php-application](doc/php-application.md) is a just simple wall with posts. It's written with `PHP-7` and it uses `redis-cache` as a storage.
+[Php-application](doc/php-application.md) with a `redis-cache` can work on a single instance or on separate instances (it depends on [configuration](doc/advanced-configuration.md)).
 
 #### Read more:
 - [Php application reference](doc/php-application.md)
 - [Results of stress testing](doc/results.md)
 
-You can fork this and adjust to your project or just have some fun with `provisioning`, `deployment` and `stress-testing`.
+You can fork this and adjust to your project or just have some fun with `provisioning`, `deployment`, and `stress-testing`.
 
 ## Local machine requirements
 - [Make](https://www.gnu.org/software/make/manual/make.html)
@@ -52,30 +52,30 @@ REDIS_CACHE_HOST_SSH_KEY = ~/.ssh/id_rsa #path to private ssh key
 
 and save it here: `config/config.makefile`
 
-In case when application should be deployed to only one host then configuration for `PHP_APPLICATION_HOST` and `REDIS_CACHE_HOST` can be the same.      
+In the case when an application should be deployed to only one host then the configuration for `PHP_APPLICATION_HOST` and `REDIS_CACHE_HOST` can be the same.      
 **See more:** [advanced configuration](doc/advanced-configuration.md)
 
 ## Deployment and Provisioning
-**Deployment** and **provisioning** was built in with [ansible-playbook](http://docs.ansible.com/ansible/playbooks.html) command.
-Script at first installs all required dependencies on your host(s) (`provisioning`) and then it `deploys` a `php-application`.
+**Deployment** and **provisioning** were built in with [ansible-playbook](http://docs.ansible.com/ansible/playbooks.html) command.
+The script at first installs all required dependencies on your host(s) (`provisioning`) and then it `deploys` a `php-application`.
 
-Here is a **make** target which runs [ansible-playbook](http://docs.ansible.com/ansible/playbooks.html) using configuration from **config/config.makefile**:  
+Here is a **make** target which runs [ansible-playbook](http://docs.ansible.com/ansible/playbooks.html) using the configuration from **config/config.makefile**:  
 `make deploy`
 
 ## Stress testing
 Stress testing was built in with [Gatling](http://gatling.io/).   
-Script runs stress tests using configuration from **config/config.makefile**.  
+The script runs stress tests the using configuration from **config/config.makefile**.  
 `make run_stress_test`
 
 Stress test scenario:
 - Render wall with posts
 - Publish a post on the wall
 
-As default it ramps from 1 request per second to 100 requests per second during 100 seconds. Those values can be set, see [configuration](doc/advanced-configuration.md)
-Executing of stress test requires fast internet connection.    
-**Notice** It's great idea to run `make run_stress_test` from machine in same networking like host with `php-application` and `redis-cache` .
+As default, it ramps from 1 request per second to 100 requests per second during 100 seconds. Those values can be set, see [configuration](doc/advanced-configuration.md)
+Executing of stress test requires a fast internet connection.    
+**Notice** It's a great idea to run `make run_stress_test` from machine in same networking like a host with `php-application` and `redis-cache` .
 
-See the `gatling` [simulation scenario](gatling-stress-testing/user-files/simulations/PublishPostSimulation.scala):
+**See more:** [Gatling simulation scenario](gatling-stress-testing/user-files/simulations/PublishPostSimulation.scala).
 
 #### Stress testing result:
 
