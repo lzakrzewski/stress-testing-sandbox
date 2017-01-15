@@ -4,6 +4,8 @@
 ## Know-how
 This repository is a simple sandbox which can be used to quickly compare multiple infrastructure setup.
 
+
+#### Features
 With **stress-testing-sandbox** you can:
  - `provision` your host (hosts) to install all required dependencies with [Ansible](http://docs.ansible.com/ansible/intro_getting_started.html)
  - `deploy` [php-application](doc/php-application.md) to your host with [Ansible](http://docs.ansible.com/ansible/intro_getting_started.html)
@@ -51,7 +53,7 @@ REDIS_CACHE_HOST_SSH_KEY = ~/.ssh/id_rsa #path to private ssh key
 and save it here: `config/config.makefile`
 
 In case when application should be deployed to only one host then configuration for `PHP_APPLICATION_HOST` and `REDIS_CACHE_HOST` can be the same.
-**See more:** [Advanced configuration](doc/advanced-configuration.md)
+**See more:** [advanced configuration](doc/advanced-configuration.md)
 
 ## Deployment and Provisioning
 **Deployment** and **provisioning** was built in with [ansible-playbook](http://docs.ansible.com/ansible/playbooks.html) command.
@@ -61,19 +63,21 @@ Here is a **make** target which runs [ansible-playbook](http://docs.ansible.com/
 `make deploy`
 
 ## Stress testing
-`make run_stress_test` - performs stress test on your infrastructure.
+Stress testing was built in with [Gatling](http://gatling.io/).   
+Script runs stress tests using configuration from **config/config.makefile**.  
+`make run_stress_test`
 
 Stress test scenario:
 - Render wall with posts
 - Publish a post on the wall
 
-As default it ramps from 1 request per second to 100 requests per second during 100 seconds.
+As default it ramps from 1 request per second to 100 requests per second during 100 seconds. Those values can be set, see [configuration](doc/advanced-configuration.md)
 Executing of stress test requires fast internet connection.
 **Notice** It's great idea to run `make run_stress_test` from machine in same networking like host with `php-application` and `redis-cache` .
 
 See the `gatling` [simulation scenario](gatling-stress-testing/user-files/simulations/PublishPostSimulation.scala):
 
-#### Stress test result:
+#### Stress testing result:
 
 ![](doc/results/req-per-sec/1x-1-CPU-2GB-16.04-50-50.png)
 

@@ -1,0 +1,10 @@
+{
+  "simulation": "wall.PublishPostSimulation",
+  "simulationId": "publishpostsimulation",
+  "start": 1484405922545,
+  "description": "",
+  "scenarios": ["PublishPostSimulation"],
+  "assertions": [
+
+  ]
+}
