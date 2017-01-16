@@ -95,7 +95,7 @@ build_package:
 	mkdir -p $(REPOSITORY_DIR)
 	mkdir -p $(PACKAGE_DIR)
 	git clone --depth 1 $(REPOSITORY_URL) $(REPOSITORY_DIR)
-	tar --exclude-vcs --directory $(REPOSITORY_DIR)/php-application -czf $(PACKAGE_DIR)/php-application.tar.gz .
+	tar --directory $(REPOSITORY_DIR)/php-application -czf $(PACKAGE_DIR)/php-application.tar.gz .
 
 deploy_php_application: build_package
 	ansible-playbook -i '$(PHP_APPLICATION_HOST),' -u $(PHP_APPLICATION_HOST_USER) --key-file=$(PHP_APPLICATION_HOST_SSH_KEY_PRIVATE) ansible-deployment/php-application-deployment.yml -e CACHE_HOST=$(PHP_APPLICATION_CACHE_HOST) --ssh-common-args="-o StrictHostKeyChecking=no -o BatchMode=yes"
